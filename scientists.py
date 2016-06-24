@@ -76,11 +76,11 @@ class Scientist(object):
 
 				current =random.choice(options)
 
-				remaining = 1.0 -current 
+				remaining = 1.0 - current 
 
 				iterations = int(remaining / .1)
 
-				if iterations == 0:
+				if current == 1.0:
 					grandfather =0.0
 					past = 0.0
 
@@ -94,7 +94,10 @@ class Scientist(object):
 							options2.append((.1*i))
 				
 					grandfather = random.choice(options2)
-					past = remaining - grandfather
+					if int(current+grandfather) == 1:
+						past =0.0
+					else:
+						past = remaining - grandfather
 
 				ideas_list[self.birthyear-1].add_effort(grandfather)
 				ideas_list[self.birthyear].add_effort(past)
