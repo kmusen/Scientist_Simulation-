@@ -22,7 +22,7 @@ class Scientist(object):
 	def get_old(self):
 		self.age = "old"
 	
-	def die(self):
+	def dies(self):
 		self.age = "dead"
 
 	def is_dead(self):
@@ -70,21 +70,21 @@ class Idea(object):
 def lifecycle(env):
 
 	researchers = []
-	counter = -1
-	researchers.append((Scientist(1, env)))
+	counter = 0
+	researchers.append((Scientist(0, env)))
 	time = 1
 	yield env.timeout(time)
 
 	num_researchers = 1
 
 	while True:
-		counter += 2
-		researchers.append(Scientists((counter+1), env))
-		researchers[int(counter)].get_old()
+		counter += 1
+		researchers.append(Scientist((counter), env))
+		researchers[int(counter-1)].get_old()
 		if len(researchers) > 2:
-			researchers[counter-1].dies()
+			researchers[counter-2].dies()
 		duration = 1
-		print rsearchers
+		print researchers
 		yield env.timeout(duration)
 
 
@@ -92,6 +92,7 @@ def lifecycle(env):
 env.process(lifecycle(env))
 
 env.run(until = 10)
+
 		
 	
 	
