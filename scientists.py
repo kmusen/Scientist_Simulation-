@@ -155,7 +155,7 @@ def lifecycle(env):
 
 def main():
 
-	cycles = 10 
+	cycles = int(raw_input("How many generations of scientists do you want?"))
 
 	global ideas_list
 
@@ -166,7 +166,7 @@ def main():
 
 	env.process(lifecycle(env))
 
-	env.run(until = 10)
+	env.run(until = cycles)
 
 	total_effort_all_ideas =0
 
