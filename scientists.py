@@ -41,7 +41,8 @@ class Scientist(object):
 	def study(self):
 		while True:
 
-			options = [0, .25, .5, .75, 1]
+			options = [0.0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0]
+
 
 			if self.age == "dead":
 
@@ -49,13 +50,18 @@ class Scientist(object):
 
 			elif self.birthyear ==0 and self.age == "young":
 				current = 1
-				print "\nIn time0:\n"
+				print "\nIn time 0:\n"
 				print "Scientist 0 exerts 1 unit of effort on Idea 0"
 
+				ideas_list[0].add_effort(1)
+ 
 			elif self.birthyear == 0 and self.age == "old":
 				past = random.choice(options)
 				current = 1.0- past
 				print "Scientist 0 exerts " + str(past) + " units of effort on idea 0 and " + str(current) + " units of effort on idea 1"
+
+				ideas_list[self.birthyear].add_effort(past)
+				ideas_list[self.birthyear+1].add_effort(current)
 
 			elif self.age == "young":
 				current = random.choice(options)
@@ -63,26 +69,36 @@ class Scientist(object):
 				print "\nIn time " +str(self.birthyear) + ":\n"
 				print "Scienitst " +str(self.birthyear) + " exerts " + str(grandfather) + " units of effort on idea " + str(self.birthyear-1) + " and " + str(current) + " units of effort on idea " + str(self.birthyear)
 
+				ideas_list[self.birthyear-1].add_effort(grandfather)
+				ideas_list[self.birthyear].add_effort(current)
+
 			else:
 
 				current =random.choice(options)
 
-				remaining = 1 -current 
+				remaining = 1.0 -current 
 
-				iterations = int(remaining / .25)
+				iterations = int(remaining / .1)
 
 				if iterations == 0:
-					grandfather =0
-					past = 0
+					grandfather =0.0
+					past = 0.0
 
 				else:
 
-					options2 = [0]
-					for i in range(1, (iterations+1)):
-						options2.append(.25*i)
-						#print options2[i]
+					if current ==.9:
+						options2 = [0.0, .1]
+					else:
+						options2 = [0.0]
+						for i in range(1, (iterations+1)):
+							options2.append((.1*i))
+				
 					grandfather = random.choice(options2)
 					past = remaining - grandfather
+
+				ideas_list[self.birthyear-1].add_effort(grandfather)
+				ideas_list[self.birthyear].add_effort(past)
+				ideas_list[self.birthyear+1].add_effort(current)
 				
 				print "Scientist " + str(self.birthyear) + " uses " + str(current) + " units of effort on idea " +str(self.birthyear+1) + ", " + str(past) + " units of effort on idea " + str(self.birthyear) + ", and " +str(grandfather) + " units of effort on idea " +str(self.birthyear-1)
 			
@@ -102,11 +118,13 @@ class Idea(object):
 		s = "idea" +str(self.year_created)
 		return s
 	
-	def add_contributor(scientist, amount):
-
-		self.contributors.append(scientist)
+	def add_effort(self, amount):
 		
-		sef.total_effort += float(amount)
+		self.total_effort += float(amount)
+
+	def get_effort(self):
+
+		return self.total_effort
 		
 
 def lifecycle(env):
@@ -134,9 +152,28 @@ def lifecycle(env):
 
 def main():
 
+	cycles = 10 
+
+	global ideas_list
+
+	ideas_list = []
+
+	for i in range(cycles):
+		ideas_list.append(Idea(i))
+
 	env.process(lifecycle(env))
 
 	env.run(until = 10)
+
+	total_effort_all_ideas =0
+
+	for i in range(cycles):
+
+		print str(ideas_list[i].get_effort()) + " units total effort on idea " + str(i)
+
+		total_effort_all_ideas += ideas_list[i].get_effort()
+
+	print str(total_effort_all_ideas) + " units effort on all ideas combined"
 
 
 main()
