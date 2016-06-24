@@ -42,8 +42,50 @@ class Scientist(object):
 		while True:
 
 			options = [0, .25, .5, .75, 1]
-			x = random.choice(options)
-			print "Scientist uses " + str(x) + " units of effort"
+
+			if self.age == "dead":
+
+				print "Scientist " +str(self.birthyear) + " is dead"
+
+			elif self.birthyear ==0 and self.age == "young":
+				current = 1
+				print "\nIn time0:\n"
+				print "Scientist 0 exerts 1 unit of effort on Idea 0"
+
+			elif self.birthyear == 0 and self.age == "old":
+				past = random.choice(options)
+				current = 1.0- past
+				print "Scientist 0 exerts " + str(past) + " units of effort on idea 0 and " + str(current) + " units of effort on idea 1"
+
+			elif self.age == "young":
+				current = random.choice(options)
+				grandfather = 1 - current
+				print "\nIn time " +str(self.birthyear) + ":\n"
+				print "Scienitst " +str(self.birthyear) + " exerts " + str(grandfather) + " units of effort on idea " + str(self.birthyear-1) + " and " + str(current) + " units of effort on idea " + str(self.birthyear)
+
+			else:
+
+				current =random.choice(options)
+
+				remaining = 1 -current 
+
+				iterations = int(remaining / .25)
+
+				if iterations == 0:
+					grandfather =0
+					past = 0
+
+				else:
+
+					options2 = [0]
+					for i in range(1, (iterations+1)):
+						options2.append(.25*i)
+						#print options2[i]
+					grandfather = random.choice(options2)
+					past = remaining - grandfather
+				
+				print "Scientist " + str(self.birthyear) + " uses " + str(current) + " units of effort on idea " +str(self.birthyear+1) + ", " + str(past) + " units of effort on idea " + str(self.birthyear) + ", and " +str(grandfather) + " units of effort on idea " +str(self.birthyear-1)
+			
 			t = 1
 			yield env.timeout(t)
 				
@@ -84,14 +126,20 @@ def lifecycle(env):
 		if len(researchers) > 2:
 			researchers[counter-2].dies()
 		duration = 1
-		print researchers
+		#for researcher in researchers:
+			#print researcher
+
 		yield env.timeout(duration)
 
 
+def main():
 
-env.process(lifecycle(env))
+	env.process(lifecycle(env))
 
-env.run(until = 10)
+	env.run(until = 10)
+
+
+main()
 
 		
 	
