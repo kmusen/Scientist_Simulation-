@@ -41,21 +41,21 @@ class Scientist(object):
 	def study(self):
 		while True:
 
-			options = [0.0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0]
+			options = [0.0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0] #creates options for effort for first project
 
 
-			if self.age == "dead":
+			if self.age == "dead": #so that we know which scientists are no longer doing research
 
-				print "Scientist " +str(self.birthyear) + " is dead"
+				print "Scientist " +str(self.birthyear) + " is dead" 
 
-			elif self.birthyear ==0 and self.age == "young":
+			elif self.birthyear ==0 and self.age == "young": #Scientist 0 in year 0 can only work on idea 0
 				current = 1
 				print "\nIn time 0:\n"
 				print "Scientist 0 exerts 1 unit of effort on Idea 0"
 
 				ideas_list[0].add_effort(1)
  
-			elif self.birthyear == 0 and self.age == "old":
+			elif self.birthyear == 0 and self.age == "old": #Scientist 0 in year 1 only has 2 options instead of 3 like other old scientists
 				past = random.choice(options)
 				current = 1.0- past
 				print "Scientist 0 exerts " + str(past) + " units of effort on idea 0 and " + str(current) + " units of effort on idea 1"
@@ -63,7 +63,7 @@ class Scientist(object):
 				ideas_list[self.birthyear].add_effort(past)
 				ideas_list[self.birthyear+1].add_effort(current)
 
-			elif self.age == "young":
+			elif self.age == "young": #randomly splits 1 unit of effort between two options given to young scientists
 				current = random.choice(options)
 				grandfather = 1 - current
 				print "\nIn time " +str(self.birthyear) + ":\n"
@@ -72,7 +72,7 @@ class Scientist(object):
 				ideas_list[self.birthyear-1].add_effort(grandfather)
 				ideas_list[self.birthyear].add_effort(current)
 
-			else:
+			else: #randomly splits effort between three options given to old scientists 
 
 				current =random.choice(options)
 
@@ -121,16 +121,16 @@ class Idea(object):
 		s = "idea" +str(self.year_created)
 		return s
 	
-	def add_effort(self, amount):
+	def add_effort(self, amount): #method to add effort into an idea
 		
 		self.total_effort += float(amount)
 
-	def get_effort(self):
+	def get_effort(self): #method to find out how much effort has been put into an idea
 
 		return self.total_effort
 		
 
-def lifecycle(env):
+def lifecycle(env): #creates, ages, and kills scientists 
 
 	researchers = []
 	counter = 0
@@ -138,14 +138,14 @@ def lifecycle(env):
 	time = 1
 	yield env.timeout(time)
 
-	num_researchers = 1
+	#num_researchers = 1 #we start with one scientists in year 0
 
 	while True:
 		counter += 1
-		researchers.append(Scientist((counter), env))
-		researchers[int(counter-1)].get_old()
+		researchers.append(Scientist((counter), env)) #adds scientists
+		researchers[int(counter-1)].get_old() #ages scientists 
 		if len(researchers) > 2:
-			researchers[counter-2].dies()
+			researchers[counter-2].dies() #kills scientists 
 		duration = 1
 		#for researcher in researchers:
 			#print researcher
@@ -157,16 +157,16 @@ def main():
 
 	cycles = int(raw_input("How many generations of scientists do you want?"))
 
-	global ideas_list
+	global ideas_list #allows access to this list within the classes 
 
 	ideas_list = []
 
-	for i in range(cycles):
+	for i in range(cycles): #creates the number of ideas specified by the number of cycles the user wants 
 		ideas_list.append(Idea(i))
 
 	env.process(lifecycle(env))
 
-	env.run(until = cycles)
+	env.run(until = cycles) #runs simulation
 
 	total_effort_all_ideas =0
 
@@ -174,7 +174,7 @@ def main():
 
 		print str(ideas_list[i].get_effort()) + " units total effort on idea " + str(i)
 
-		total_effort_all_ideas += ideas_list[i].get_effort()
+		total_effort_all_ideas += ideas_list[i].get_effort() #adds up total effort into all ideas, serves as a check for bugs
 
 	print str(total_effort_all_ideas) + " units effort on all ideas combined"
 
