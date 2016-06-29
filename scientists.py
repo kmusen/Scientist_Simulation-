@@ -17,6 +17,7 @@ class Scientist(object):
 		self.process = env.process(self.study())
 		self.ideas_can_study = []
 		self.effort_available = 1.0
+		self.k_used = 0.0
 
 	def __str__(self):
 		s = "scientist" + str(self.birthyear)
@@ -47,6 +48,15 @@ class Scientist(object):
 
 		self.ideas_can_study.append(ideas_list[int(idea_num)])
 		self.effort_available -= k
+		self.k_used += 1.0
+
+	def get_k(self):
+
+		return self.k_used
+
+	def get_study_list(self):
+
+		return self.ideas_can_study
 	
 	def study(self):
 		while True:
@@ -158,19 +168,19 @@ class Scientist(object):
 
 					iterations = int(remaining / .1)
 
-					print "wolf"
+					#print "wolf"
 					
 					if self.effort_available==.1:
 						options2 = [0.0, .1]
 					
-						print "penguin"
+						#print "penguin"
 					
 					else:
 						options2 = [0.0]
 						for i in range(1, (iterations+1)):
 							options2.append((.1*i))
 					
-						print "elephant"
+						#print "elephant"
 					
 					if ideas_list[(self.birthyear-1)] in self.ideas_can_study:
 
@@ -179,59 +189,59 @@ class Scientist(object):
 
 						self.effort_available -= grandfather
 
-						print "monkey"
+						#print "monkey"
 
-						print current
+						#print current
 						
 						if (current > 0.0 and current+grandfather == 1-k):
 							
 								past =0.0
 
-								print "cat"
+								#print "cat"
 						
 						elif int(grandfather) == 1:
 
 							past = 0.0 
 
 						
-							print "fish"
+							#print "fish"
 						
 						else:
 
-							print "strawberry"
+							#print "strawberry"
 							if ideas_list[(self.birthyear)] in self.ideas_can_study:
 								
 								past = self.effort_available
 								self.effort_available = 0
 							
-								print "apple"
+								#print "apple"
 							else:
 
-								print "bannana"
+								#print "bannana"
 								
 								if int(10*self.effort_available) <= int(k*10):
 									grandfather += self.effort_available
 									past = 0
 									self.effort_available = 0
 
-									print "kiwi"
+									#print "kiwi"
 								
 								else:	
 									past = self.effort_available - k
 									self.effort_available = 0
-									print "carrot"
+									#print "carrot"
 					else:
 
-						print "salad"
+						#print "salad"
 						if int(10*self.effort_available) <= int(k*10):
 							
-							print "soup"
+							#print "soup"
 							if ideas_list[(self.birthyear)] in self.ideas_can_study:
 								grandfather = 0
 								past = self.effort_available
 								self.effort_available = 0
 						
-								print "sushi"
+								#print "sushi"
 						else:
 
 							options3 = []
@@ -280,7 +290,7 @@ class Scientist(object):
 							
 
 					
-				print "hallo"
+				#print "hallo"
 				ideas_list[self.birthyear-1].add_effort(grandfather)
 				ideas_list[self.birthyear].add_effort(past)
 				ideas_list[self.birthyear+1].add_effort(current)
@@ -313,6 +323,8 @@ class Idea(object):
 		
 
 def lifecycle(env): #creates, ages, and kills scientists 
+	
+	global researchers
 
 	researchers = []
 	counter = 0
@@ -333,6 +345,7 @@ def lifecycle(env): #creates, ages, and kills scientists
 			#print researcher
 
 		yield env.timeout(duration)
+
 
 
 def main():
@@ -363,6 +376,9 @@ def main():
 		total_effort_all_ideas += ideas_list[i].get_effort() #adds up total effort into all ideas, serves as a check for bugs
 
 	print str(total_effort_all_ideas) + " units effort on all ideas combined"
+
+	for i in range(len(researchers)):
+		print str(researchers[i].get_k()) + str(researchers[i].get_study_list())
 
 
 main()
