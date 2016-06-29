@@ -89,7 +89,7 @@ class Scientist(object):
 				
 				if past != 1.0:
 					self.use_k(1)
-					current = 1.0 - past
+					current = 1.0 - past - k
 				else:
 					current = 0.0
 
@@ -244,9 +244,16 @@ class Scientist(object):
 							val = random.choice(options3)
 							
 							if val > 0:
-								self.use_k(self.birthyear-1)
-								grandfather = val - k
-								self.effort_available -= grandfather
+
+								if ideas_list[(self.birthyear-1)] in self.ideas_can_study:
+									grandfather = val
+									self.effort_available -= grandfather
+
+								else:
+
+									self.use_k(self.birthyear-1)
+									grandfather = val - k
+									self.effort_available -= grandfather
 
 								if int(10*self.effort_available) <= int(k*10):
 									grandfather += self.effort_available
@@ -254,7 +261,7 @@ class Scientist(object):
 									self.effort_available = 0.0
 								else:
 									self.use_k(self.birthyear)
-									past = self.effort_available- k
+									past = self.effort_available
 									self.effort_available = 0
 
 							else:
