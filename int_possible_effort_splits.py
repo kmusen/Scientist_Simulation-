@@ -26,36 +26,53 @@ def all_possible_effort_splits():
 		for j in range(len(options)):
 			for k in range(len(options)):
 				if (i+j+k) == 10 or (i+j+k) == 9 or (i+j+k) == 8:
-					idec = i/10.0
-					jdec = j/10.0
-					kdec = k/10.0
-					list_of_options.append((idec, jdec, kdec))
+					idec = i
+					jdec = j
+					kdec = k
+					list_of_options.append([idec, jdec, kdec])
 
 	print len(list_of_options)
 
-	return set(list_of_options)
+	return list_of_options
 					
 
 def remove_impossible_splits(all_effort_splits, total_effort, num_of_effort_units, num_of_ideas, k):
-	splits_to_remove = set()
+	splits_to_remove = []
 	for effort_split in all_effort_splits:
 		# print(effort_split)
 		# print(effort_split[0])
 		# print(sum(effort_split))
 		# print(effort_split[0] != 0.0 and sum(effort_split) == total_effort)
 
-		if values_equal(effort_split[0], total_effort): # Case 1
-			splits_to_remove.add(effort_split)
-		elif not values_equal(effort_split[0], 0.0) and values_equal(sum(effort_split), total_effort):
-		# elif int(1000*effort_split[0]) != int(1000*0.0) and values_equal(sum(effort_split), total_effort):
-			splits_to_remove.add(effort_split)
-		elif values_equal(sum(effort_split), total_effort-2*k) and two_zero_elem(effort_split):
-			splits_to_remove.add(effort_split)
-		elif values_equal(effort_split[0], 0.0) and values_equal(sum(effort_split), total_effort-2*k):
-			splits_to_remove.add(effort_split)
+		# if values_equal(effort_split[0], total_effort): # Case 1
+		# 	splits_to_remove.add(effort_split)
+		# elif not values_equal(effort_split[0], 0) and values_equal(sum(effort_split), total_effort):
+		# # elif int(1000*effort_split[0]) != int(1000*0.0) and values_equal(sum(effort_split), total_effort):
+		# 	splits_to_remove.add(effort_split)
+		# elif values_equal(sum(effort_split), total_effort-2*k) and two_zero_elem(effort_split):
+		# 	splits_to_remove.add(effort_split)
+		# elif values_equal(effort_split[0], 0.0) and values_equal(sum(effort_split), total_effort-2*k):
+		# 	splits_to_remove.add(effort_split)
 
-	all_effort_splits = all_effort_splits.difference(splits_to_remove)
+
+		if effort_split[0] == total_effort:
+			splits_to_remove.append(effort_split)
+		elif effort_split[0] != 0 and sum(effort_split) == total_effort:
+			splits_to_remove.append(effort_split)
+		elif sum(effort_split) == total_effort-2*k and two_zero_elem(effort_split):
+			splits_to_remove.append(effort_split)
+		elif effort_split[0] == 0 and sum(effort_split) == total_effort-2*k:
+			splits_to_remove.append(effort_split)
+
+
+	all_effort_splits = remove_from_list(all_effort_splits, splits_to_remove)
+
 	return all_effort_splits
+
+def remove_from_list(original_list, to_remove):
+	for item in to_remove:
+		original_list.remove(item)
+	return original_list
 
 
 def two_zero_elem(list_of_nums):
@@ -64,6 +81,8 @@ def two_zero_elem(list_of_nums):
 
 def values_equal(val1, val2):
 	return int(10*val1) == int(10*val2)
+
+
 
 
 
@@ -79,8 +98,8 @@ def float_equals_int(float_num, int_num):
 	return False
 
 def main():
-	k = 0.1
-	total_effort = 1.0
+	k = 1
+	total_effort = 10
 	num_of_effort_units = 10 #Comment this more thoroughly because unintuitive
 	num_of_ideas = 3
 	# all_effort_splits = all_possible_effort_splits(total_effort, num_of_effort_units, num_of_ideas, k)
@@ -89,7 +108,7 @@ def main():
 	all_effort_splits = all_possible_effort_splits()
 
 	for effort_split in all_effort_splits:
-		if values_equal(effort_split[0], 0.6):
+		if values_equal(effort_split[0], 6):
 			print effort_split
 
 	all_effort_splits = remove_impossible_splits(all_effort_splits, total_effort, num_of_effort_units, num_of_ideas, k)
@@ -99,7 +118,7 @@ def main():
 
 	list_of_interest = []
 	for effort_split in all_effort_splits:
-		if values_equal(effort_split[0], 0.0):
+		if values_equal(effort_split[0], 0):
 			list_of_interest.append(effort_split)
 
 	print len(list_of_interest)
