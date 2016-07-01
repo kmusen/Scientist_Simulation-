@@ -16,19 +16,20 @@ import itertools
 
 
 
-def all_possible_effort_splits(total_effort, cost):
+def all_possible_effort_splits(total_effort, cost, effort_unit):
 	#options = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-	options = range(total_effort+1)
+	options = range(0, total_effort+1, effort_unit)
 	list_of_options = []
 	
 
 	for i in range(len(options)):
 		for j in range(len(options)):
 			for k in range(len(options)):
-				if (i+j+k) == total_effort or (i+j+k) == (total_effort-cost) or (i+j+k) == (total_effort- (2*cost)):
-					idec = i
-					jdec = j
-					kdec = k
+				x = options[i]+options[j]+options[k]
+				if x == total_effort or x == (total_effort-cost) or x == (total_effort- (2*cost)):
+					idec = options[i]
+					jdec = options[j]
+					kdec = options[k]
 					list_of_options.append([idec, jdec, kdec])
 
 	print len(list_of_options)
@@ -99,14 +100,19 @@ def float_equals_int(float_num, int_num):
 	return False
 
 def main():
-	k = 1
-	total_effort = 10
-	num_of_effort_units = 10 #Comment this more thoroughly because unintuitive
+	k = float(raw_input("K? "))
+	total_effort = float(raw_input("Total efforts? "))
+	num_of_effort_units = float(raw_input("Number of effort units?" ))
+	decimals = int(raw_input("Decimals? "))
+
+	k = int(k*(10**decimals))
+	total_effort = int(total_effort*(10**decimals))
+	num_of_effort_units = int(num_of_effort_units*(10**decimals)) #Comment this more thoroughly because unintuitive
 	num_of_ideas = 3
 	# all_effort_splits = all_possible_effort_splits(total_effort, num_of_effort_units, num_of_ideas, k)
 	# print((0.2, 0.0, 0.4) in all_effort_splits)
 	# print(all_effort_splits)
-	all_effort_splits = all_possible_effort_splits(total_effort, k)
+	all_effort_splits = all_possible_effort_splits(total_effort, k, num_of_effort_units)
 
 	#for effort_split in all_effort_splits:
 		#if values_equal(effort_split[0], 6):
@@ -114,7 +120,7 @@ def main():
 
 	all_effort_splits = remove_impossible_splits(all_effort_splits, total_effort, num_of_effort_units, num_of_ideas, k)
 
-	all_effort_splits = make_decimal(all_effort_splits, 1)
+	all_effort_splits = make_decimal(all_effort_splits, decimals)
 	print(all_effort_splits)
 	print(len(all_effort_splits))
 
