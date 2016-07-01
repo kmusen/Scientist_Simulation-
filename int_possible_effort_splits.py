@@ -16,16 +16,16 @@ import itertools
 
 
 
-def all_possible_effort_splits():
+def all_possible_effort_splits(total_effort, cost):
 	#options = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-	options = range(11)
+	options = range(total_effort+1)
 	list_of_options = []
 	
 
 	for i in range(len(options)):
 		for j in range(len(options)):
 			for k in range(len(options)):
-				if (i+j+k) == 10 or (i+j+k) == 9 or (i+j+k) == 8:
+				if (i+j+k) == total_effort or (i+j+k) == (total_effort-cost) or (i+j+k) == (total_effort- (2*cost)):
 					idec = i
 					jdec = j
 					kdec = k
@@ -84,13 +84,14 @@ def values_equal(val1, val2):
 
 
 
+def make_decimal(list_to_decimal, places):
 
+	for item in list_to_decimal:
+		for j in range(len(item)):
+			item[j] = item[j] / (10.0 ** places)
 
-# def print_sorted_set(unsorted_set):
-# 	sorted_list = list(unsorted_set)
-# 	print(sorted_list)
-# 	sorted_list = sorted_list.sort()
-# 	print(sorted_list)
+	return list_to_decimal
+
 
 def float_equals_int(float_num, int_num):
 	if int(1-float_num) == int_num:
@@ -105,24 +106,25 @@ def main():
 	# all_effort_splits = all_possible_effort_splits(total_effort, num_of_effort_units, num_of_ideas, k)
 	# print((0.2, 0.0, 0.4) in all_effort_splits)
 	# print(all_effort_splits)
-	all_effort_splits = all_possible_effort_splits()
+	all_effort_splits = all_possible_effort_splits(total_effort, k)
 
-	for effort_split in all_effort_splits:
-		if values_equal(effort_split[0], 6):
-			print effort_split
+	#for effort_split in all_effort_splits:
+		#if values_equal(effort_split[0], 6):
+			#print effort_split
 
 	all_effort_splits = remove_impossible_splits(all_effort_splits, total_effort, num_of_effort_units, num_of_ideas, k)
 
+	all_effort_splits = make_decimal(all_effort_splits, 1)
 	print(all_effort_splits)
 	print(len(all_effort_splits))
 
-	list_of_interest = []
-	for effort_split in all_effort_splits:
-		if values_equal(effort_split[0], 0):
-			list_of_interest.append(effort_split)
+	#list_of_interest = []
+	#for effort_split in all_effort_splits:
+		#if values_equal(effort_split[0], 0):
+			#list_of_interest.append(effort_split)
 
-	print len(list_of_interest)
-	print(list_of_interest)
+	#print len(list_of_interest)
+	#print(list_of_interest)
 	# print_sorted_set(all_effort_splits)
 
 if __name__ == "__main__":
