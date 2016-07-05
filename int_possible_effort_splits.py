@@ -2,12 +2,12 @@ import itertools
 
 # Function: all_possible_effort_splits
 # Parameters: 
-# num_of_effort_units - the number of effort units the total K efforts is split into (i.e. 10 means K/10 is one effort unit)
+# size_of_effort_units - the number of effort units the total K efforts is split into (i.e. 10 means K/10 is one effort unit)
 # number_of_ideas - number of ways we want to split the effort units
 # Given a list, gives you all possible combinations of effort 
-# def all_possible_effort_splits(total_effort, num_of_effort_units, num_of_ideas, k):
-# 	effort_unit = float(total_effort)/num_of_effort_units
-# 	rng = list(range(num_of_effort_units+1))*num_of_ideas
+# def all_possible_effort_splits(total_effort, size_of_effort_units, num_of_ideas, k):
+# 	effort_unit = float(total_effort)/size_of_effort_units
+# 	rng = list(range(size_of_effort_units+1))*num_of_ideas
 # 	rng = [round(x * effort_unit, 2) for x in rng]
 # 	effort_splits = set(i for i in itertools.permutations(rng, num_of_ideas) if values_equal(sum(i), total_effort))
 # 	effort_splits = effort_splits.union(i for i in itertools.permutations(rng, num_of_ideas) if values_equal(sum(i), total_effort-k))
@@ -37,7 +37,7 @@ def all_possible_effort_splits(total_effort, cost, effort_unit):
 	return list_of_options
 					
 
-def remove_impossible_splits(all_effort_splits, total_effort, num_of_effort_units, num_of_ideas, k):
+def remove_impossible_splits(all_effort_splits, total_effort, size_of_effort_units, num_of_ideas, k):
 	splits_to_remove = []
 	for effort_split in all_effort_splits:
 		# print(effort_split)
@@ -102,23 +102,24 @@ def float_equals_int(float_num, int_num):
 def main():
 	k = float(raw_input("K? "))
 	total_effort = float(raw_input("Total efforts? "))
-	num_of_effort_units = float(raw_input("Number of effort units?" ))
+	# size_of_effort_units = float(raw_input("Number of effort units?" ))
+	size_of_effort_units = float(raw_input("Size of effort unit?" ))
 	decimals = int(raw_input("Decimals? "))
 
 	k = int(k*(10**decimals))
 	total_effort = int(total_effort*(10**decimals))
-	num_of_effort_units = int(num_of_effort_units*(10**decimals)) #Comment this more thoroughly because unintuitive
-	num_of_ideas = 3
-	# all_effort_splits = all_possible_effort_splits(total_effort, num_of_effort_units, num_of_ideas, k)
+	size_of_effort_units = int(size_of_effort_units*(10**decimals)) #Comment this more thoroughly because unintuitive
+	num_of_ideas = 2
+	# all_effort_splits = all_possible_effort_splits(total_effort, size_of_effort_units, num_of_ideas, k)
 	# print((0.2, 0.0, 0.4) in all_effort_splits)
 	# print(all_effort_splits)
-	all_effort_splits = all_possible_effort_splits(total_effort, k, num_of_effort_units)
+	all_effort_splits = all_possible_effort_splits(total_effort, k, size_of_effort_units)
 
 	#for effort_split in all_effort_splits:
 		#if values_equal(effort_split[0], 6):
 			#print effort_split
 
-	all_effort_splits = remove_impossible_splits(all_effort_splits, total_effort, num_of_effort_units, num_of_ideas, k)
+	all_effort_splits = remove_impossible_splits(all_effort_splits, total_effort, size_of_effort_units, num_of_ideas, k)
 
 	all_effort_splits = make_decimal(all_effort_splits, decimals)
 	print(all_effort_splits)
