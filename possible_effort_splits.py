@@ -71,9 +71,13 @@ def remove_impossible_splits(all_effort_splits, total_effort, size_of_effort_uni
 	return all_effort_splits
 
 def swap_first_and_last_elems(list_to_swap):
-	temp = list_to_swap[len(list_to_swap)-1]
-	list_to_swap[len(list_to_swap)-1] = list_to_swap[0]
-	list_to_swap[0] = temp
+	
+	for item in list_to_swap:
+
+		temp = item[len(item)-1]
+		item[len(item)-1] = item[0]
+		item[0] = temp
+	
 	return(list_to_swap)
 
 # CAUTION: Call this before you make everything into a decimal to avoid float issues
