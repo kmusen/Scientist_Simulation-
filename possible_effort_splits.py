@@ -201,7 +201,7 @@ def main():
 
 	all_effort_splits = swap_first_and_last_elems(all_effort_splits)
 
-	#all_effort_splits = remove_splits_based_on_young_effort_splits(young_split, all_effort_splits, k, total_effort)
+	all_effort_splits = remove_splits_based_on_young_effort_splits(young_split, all_effort_splits, k, total_effort)
 
 	all_effort_splits = make_decimal(all_effort_splits, decimals)
 	
