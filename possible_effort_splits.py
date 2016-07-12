@@ -32,8 +32,6 @@ def all_possible_effort_splits(total_effort, cost, effort_unit):
 					kdec = options[k]
 					list_of_options.append([idec, jdec, kdec])
 
-	print len(list_of_options)
-
 	return list_of_options
 					
 
@@ -82,51 +80,60 @@ def swap_first_and_last_elems(list_to_swap):
 
 # CAUTION: Call this before you make everything into a decimal to avoid float issues
 def remove_splits_based_on_young_effort_splits(young_split, possible_old_splits, k, total_effort):
+
+	splits_to_remove = []
+
 	# if there is one zero in the splits
 	if has_n_zero_elems(young_split, 0):
 		# remove item if the sum is 1-2k
 		for split in possible_old_splits:
 			if sum(split) == (total_effort-(2*k)): 
-				possible_old_splits.remove(split)
+				splits_to_remove.append(split)
 			elif split[2] == 0:
 				if sum(split) != total_effort:
-					possible_old_splits.remove(split)
+					splits_to_remove.append(split)
 			elif split[2] != 0:
 				if sum(split) != (total_effort-k):
-					possible_old_splits.remove(split)
+					splits_to_remove.append(split)
 	
 	elif young_split[0] == 0:
 		#remove item if the sum is 
 		for split in possible_old_splits:
 			if split[0] !=0 and split[2] != 0:
 				if sum(split) != (total_effort-(2*k)):
-					possible_old_splits.remove(split)
+					splits_to_remove.append(split)
 			elif split[0] != 0 and split[2] == 0:
 				if sum(split) != (total_effort-k):
-					possible_old_splits.remove(split)
+					splits_to_remove.append(split)
 			elif split[0] == 0 and split[2] != 0:
 				if sum(split) != (total_effort-k):
-					possible_old_splits.remove(split)
+					splits_to_remove.append(split)
 			elif split[0] == 0 and split[2] == 0:
 				if sum(split) != total_effort:
-					possible_old_splits.remove(split)
+					splits_to_remove.append(split)
 
 	elif young_split[1] == 0:
 		#remove item if the sum is
 		for split in possible_old_splits:
 			if split[1] != 0 and split[2] != 0:
 				if sum(split) != (total_effort-(2*k)):
-					possible_old_splits.remove(split)
+					splits_to_remove.append(split)
 			elif split[1] != 0 and split[2] == 0:
 				if sum(split) != (total_effort-k):
-					possible_old_splits.remove(split)
+					splits_to_remove.append(split)
 			elif split[1] == 0 and split[2] != 0:
 				if sum(split) != (total_effort-k):
-					possible_old_splits.remove(split)
+					splits_to_remove.append(split)
 			elif split[1] == 0 and split[2] == 0:
 				if sum(split) != total_effort:
-					possible_old_splits.remove(split)
-		
+					splits_to_remove.append(split)
+
+	print('Splits from second removal:')
+	for split in splits_to_remove:
+		print(split)
+	print(len(splits_to_remove))
+	possible_old_splits = remove_from_list(possible_old_splits, splits_to_remove)
+
 	return possible_old_splits
 
 # all possible cases:
@@ -172,15 +179,27 @@ def float_equals_int(float_num, int_num):
 		return True
 	return False
 
-def main():
-	k = float(raw_input("K? "))
-	total_effort = float(raw_input("Total efforts? "))
-	# size_of_effort_units = float(raw_input("Number of effort units?" ))
-	size_of_effort_units = float(raw_input("Size of effort unit?" ))
-	decimals = int(raw_input("Decimals? "))
+def diff_of_lists(larger_elems, smaller_elems):
+	for elem in smaller_elems:
+		larger_elems.remove(elem)
+	return(larger_elems)
 
-	young_split1 = float(raw_input("First value of young split?"))
-	young_split2 = float(raw_input("Second value of young split?"))
+def main():
+	# k = float(raw_input("K? "))
+	# total_effort = float(raw_input("Total efforts? "))
+	# # size_of_effort_units = float(raw_input("Number of effort units?" ))
+	# size_of_effort_units = float(raw_input("Size of effort unit?" ))
+	# decimals = int(raw_input("Decimals? "))
+
+	# young_split1 = float(raw_input("First value of young split?"))
+	# young_split2 = float(raw_input("Second value of young split?"))
+
+	k = 0.1
+	total_effort = 1.0
+	size_of_effort_units = 0.1
+	decimals = 1
+	young_split1 = 0.9 
+	young_split2 = 0.0
 
 	young_split = [young_split1, young_split2]
 
@@ -201,12 +220,24 @@ def main():
 
 	all_effort_splits = swap_first_and_last_elems(all_effort_splits)
 
-	all_effort_splits = remove_splits_based_on_young_effort_splits(young_split, all_effort_splits, k, total_effort)
+	# print('Before first removal:')
+	# print(len(all_effort_splits))
+
+	# for split in all_effort_splits:
+	# 	print(split)
+
+	all_effort_splits2 = remove_splits_based_on_young_effort_splits(young_split, all_effort_splits, k, total_effort)
 
 	all_effort_splits = make_decimal(all_effort_splits, decimals)
+
+	diff_of_splits = diff_of_lists(all_effort_splits, all_effort_splits2)
 	
-	print(all_effort_splits)
-	print(len(all_effort_splits))
+	# for split in diff_of_splits:
+	# 	print(split)
+
+	# print(len(diff_of_splits))
+
+	# print(len(all_effort_splits2))
 
 	#list_of_interest = []
 	#for effort_split in all_effort_splits:
