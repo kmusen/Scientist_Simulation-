@@ -91,6 +91,7 @@ def remove_splits_based_on_young_effort_splits(young_split, possible_old_splits,
 
 	elif young_split[TimePeriod.t] == 0:
 		print('right')
+		# print_collection_and_length(sort_list_of_tuples(possible_old_splits))
 		#remove item if the sum is
 		for split in possible_old_splits:
 			if split[TimePeriod.t] != 0 and split[TimePeriod.tplusone] != 0:
@@ -107,9 +108,13 @@ def remove_splits_based_on_young_effort_splits(young_split, possible_old_splits,
 					splits_to_remove.add(split)
 
 
-	print_collection_and_length(splits_to_remove)
+	print_collection_and_length(sort_list_of_tuples(splits_to_remove))
 	remove_from_collection(possible_old_splits, splits_to_remove)
+	print_collection_and_length(sort_list_of_tuples(possible_old_splits))
 
+
+def sort_list_of_tuples(unsorted_list):
+	return sorted(unsorted_list, key=lambda element: (element[0], element[1], element[2]))
 
 # all possible cases:
 # When young == (0, t)
@@ -188,11 +193,11 @@ def main():
 
 	all_effort_splits = all_possible_effort_splits(total_effort, k, size_of_effort_units)
 
-	print_collection_and_length(all_effort_splits)
+	# print_collection_and_length(all_effort_splits)
 
 	remove_impossible_splits(all_effort_splits, total_effort, size_of_effort_units, num_of_ideas, k)
 
-	print_collection_and_length(all_effort_splits)
+	# print_collection_and_length(all_effort_splits)
 
 	remove_splits_based_on_young_effort_splits(young_split, all_effort_splits, k, total_effort)
 
