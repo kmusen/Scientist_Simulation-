@@ -36,9 +36,6 @@ def main():
 									[0.5, 0.3], [0.1, 0.7], [0.7, 0.1], \
 									[0.6, 0.3], [0.3, 0.6]]
 
-	possible_old_effort_splits = 
-
-
 
 if __name__ == "__main__":
     main()
