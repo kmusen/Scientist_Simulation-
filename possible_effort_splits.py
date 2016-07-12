@@ -1,20 +1,6 @@
 import itertools
 from enum import Enum
 
-# Function: all_possible_effort_splits
-# Parameters: 
-# size_of_effort_units - the number of effort units the total K efforts is split into (i.e. 10 means K/10 is one effort unit)
-# number_of_ideas - number of ways we want to split the effort units
-# Given a list, gives you all possible combinations of effort 
-# def all_possible_effort_splits(total_effort, size_of_effort_units, num_of_ideas, k):
-# 	effort_unit = float(total_effort)/size_of_effort_units
-# 	rng = list(range(size_of_effort_units+1))*num_of_ideas
-# 	rng = [round(x * effort_unit, 2) for x in rng]
-# 	effort_splits = set(i for i in itertools.permutations(rng, num_of_ideas) if values_equal(sum(i), total_effort))
-# 	effort_splits = effort_splits.union(i for i in itertools.permutations(rng, num_of_ideas) if values_equal(sum(i), total_effort-k))
-# 	effort_splits = effort_splits.union(i for i in itertools.permutations(rng, num_of_ideas) if values_equal(sum(i), total_effort-2*k))
-# 	return(effort_splits)
-
 class TimePeriod(Enum):
 	tminusone = 0
 	t = 1
@@ -58,10 +44,8 @@ def remove_splits_based_on_young_effort_splits(young_split, possible_old_splits,
 
 	splits_to_remove = set()
 
-	# if there is one zero in the splits
+	# Case 1: if there is no zero in the splits
 	if has_n_zero_elems(young_split, 0):
-		print('wrong')
-		# remove item if the sum is 1-2k
 		for split in possible_old_splits:
 			if sum(split) == (total_effort-(2*k)): 
 				splits_to_remove.add(split)
@@ -72,9 +56,8 @@ def remove_splits_based_on_young_effort_splits(young_split, possible_old_splits,
 				if sum(split) != (total_effort-k):
 					splits_to_remove.add(split)
 	
+	# Case 2: if the young scientist invested nothing in idea tminusone
 	elif young_split[TimePeriod.tminusone] == 0:
-		print('wrong')
-		#remove item if the sum is 
 		for split in possible_old_splits:
 			if split[TimePeriod.tminusone] !=0 and split[TimePeriod.tplusone] != 0:
 				if sum(split) != (total_effort-(2*k)):
@@ -89,10 +72,8 @@ def remove_splits_based_on_young_effort_splits(young_split, possible_old_splits,
 				if sum(split) != total_effort:
 					splits_to_remove.add(split)
 
+	# Case 3: If the young scientist invested nothing in idea t
 	elif young_split[TimePeriod.t] == 0:
-		print('right')
-		# print_collection_and_length(sort_list_of_tuples(possible_old_splits))
-		#remove item if the sum is
 		for split in possible_old_splits:
 			if split[TimePeriod.t] != 0 and split[TimePeriod.tplusone] != 0:
 				if sum(split) != (total_effort-(2*k)):
@@ -108,7 +89,7 @@ def remove_splits_based_on_young_effort_splits(young_split, possible_old_splits,
 					splits_to_remove.add(split)
 
 
-	print_collection_and_length(sort_list_of_tuples(splits_to_remove))
+	# print_collection_and_length(sort_list_of_tuples(splits_to_remove))
 	remove_from_collection(possible_old_splits, splits_to_remove)
 	print_collection_and_length(sort_list_of_tuples(possible_old_splits))
 
@@ -181,8 +162,8 @@ def main():
 	total_effort = 1.0
 	size_of_effort_units = 0.1
 	decimals = 1
-	young_split1 = 0.9 
-	young_split2 = 0.0
+	young_split1 = 0.0
+	young_split2 = 0.9
 
 	young_split = [young_split1, young_split2]
 
