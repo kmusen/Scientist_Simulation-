@@ -1,5 +1,6 @@
 import itertools
 from enum import Enum
+import sys
 
 class TimePeriod(Enum):
 	tminusone = 0
@@ -91,7 +92,6 @@ def remove_splits_based_on_young_effort_splits(young_split, possible_old_splits,
 
 	# print_collection_and_length(sort_list_of_tuples(splits_to_remove))
 	remove_from_collection(possible_old_splits, splits_to_remove)
-	print_collection_and_length(sort_list_of_tuples(possible_old_splits))
 
 
 def sort_list_of_tuples(unsorted_list):
@@ -138,7 +138,7 @@ def make_decimal(list_to_decimal, places):
 		temp_item = list(item)
 		for j in range(len(temp_item)):
 			temp_item[j] = temp_item[j] / (10.0 ** places)
-		made_to_decimal.append(temp_item)
+		made_to_decimal.append(tuple(temp_item))
 	return made_to_decimal
 
 
@@ -148,7 +148,7 @@ def float_equals_int(float_num, int_num):
 	return False
 
 
-def main():
+def main(k, total_effort, size_of_effort_units, decimals, young_split1, young_split2):
 	# k = float(raw_input("K? "))
 	# total_effort = float(raw_input("Total efforts? "))
 	# # size_of_effort_units = float(raw_input("Number of effort units?" ))
@@ -158,12 +158,19 @@ def main():
 	# young_split1 = float(raw_input("First value of young split?"))
 	# young_split2 = float(raw_input("Second value of young split?"))
 
-	k = 0.1
-	total_effort = 1.0
-	size_of_effort_units = 0.1
-	decimals = 1
-	young_split1 = 0.0
-	young_split2 = 0.9
+	# k = sys.argv[1]
+	# total_effort = sys.argv[2]
+	# size_of_effort_units = sys.argv[3]
+	# decimals = sys.argv[4]
+	# young_split1 = sys.argv[5]
+	# young_split2 = sys.argv[6]
+
+	# k = 0.1
+	# total_effort = 1.0
+	# size_of_effort_units = 0.1
+	# decimals = 1
+	# young_split1 = 0.0
+	# young_split2 = 0.9
 
 	young_split = [young_split1, young_split2]
 
@@ -182,8 +189,12 @@ def main():
 
 	remove_splits_based_on_young_effort_splits(young_split, all_effort_splits, k, total_effort)
 
-
 	all_effort_splits = make_decimal(all_effort_splits, decimals)
+
+	print_collection_and_length(sort_list_of_tuples(all_effort_splits))
+
+	return(all_effort_splits)
+
 
 
 if __name__ == "__main__":
