@@ -2,6 +2,7 @@ from enum import Enum
 import itertools
 import possible_effort_splits as pes
 from classes import *
+from optimization_equations import modified_normal_cdf
 
 class TimePeriod(Enum):
 	tminusone = 0
@@ -33,6 +34,9 @@ def return_for_old_young_pair(young_split_constant, old_split_constant, dict_of_
 	max_return_young_old_pair = None
 	max_return = 0
 
+	constant_return = calculate_young_returns(young_split_constant, young_split_constant, old_split_constant) \
+						+ calculate_old_returns(old_split_constant, young_split_constant, young_split_constant, old_split_constant)
+
 	all_young_old_splits = []
 	for young_split in dict_of_pairs.keys():
 		all_old_splits = dict_of_pairs[young_split]
@@ -49,20 +53,28 @@ def return_for_old_young_pair(young_split_constant, old_split_constant, dict_of_
 
 		old_return = calculate_old_returns(old_split, young_split, young_split_constant, old_split_constant)
 
-		print "Old Pair:"
-		print max_return_young_old_pair
-		print max_return
-		if young_return + old_return > max_return:
-			print "Pair Return is greater:"
-			print young_old_pair
-			print young_return + old_return
+		# print "Old Pair:"
+		# print max_return_young_old_pair
+		# print max_return
+
+		# if young_old_pair[1][0] == 0.0 and young_old_pair[1][1] != 0 and young_old_pair[1][2] == 0.0:
+		# 	print young_old_pair
+		# 	print young_return + old_return
+		# if young_old_pair[1][0] != 0.0 and young_old_pair[1][1] != 0.0 and young_old_pair[1][2] == 0.0:
+		# 	print young_old_pair
+		# 	print young_return + old_return
+		if young_return + old_return > max_return and constant_return < young_return + old_return:
+			# print "Pair Return is greater:"
+			# print young_old_pair
+			# print young_return + old_return
 
 			max_return_young_old_pair = young_old_pair
 			max_return = young_return + old_return
-		else:
-			print "Pair Return NOT greater:"
-			print young_old_pair
-			print young_return + old_return
+
+		# else:
+		# 	print "Pair Return NOT greater:"
+		# 	print young_old_pair
+		# 	print young_return + old_return
 
 	return max_return_young_old_pair, max_return
 
@@ -79,45 +91,45 @@ def calculate_old_returns(old_split, young_split, young_split_constant, old_spli
 	prev_effort_on_idea_tplusone = 0
 
 	if pes.has_n_zero_elems(old_split, 0):
-		old_return = dummy_func(prev_effort_on_idea_tminusone + idea_tminusone_effort) \
-						- dummy_func(prev_effort_on_idea_tminusone) \
-						+ dummy_func(prev_effort_on_idea_t + idea_t_effort + young_split_constant[0]) \
-						- dummy_func(prev_effort_on_idea_t) \
-						+ dummy_func(prev_effort_on_idea_tplusone + idea_tplusone_effort + young_split_constant[1]) \
-						- dummy_func(prev_effort_on_idea_tplusone)
+		old_return = modified_normal_cdf(prev_effort_on_idea_tminusone + idea_tminusone_effort) \
+						- modified_normal_cdf(prev_effort_on_idea_tminusone) \
+						+ modified_normal_cdf(prev_effort_on_idea_t + idea_t_effort + young_split_constant[0]) \
+						- modified_normal_cdf(prev_effort_on_idea_t) \
+						+ modified_normal_cdf(prev_effort_on_idea_tplusone + idea_tplusone_effort + young_split_constant[1]) \
+						- modified_normal_cdf(prev_effort_on_idea_tplusone)
 	elif pes.has_n_zero_elems(old_split, 1):
 		if old_split[TimePeriod.tminusone] == 0:
-			old_return = dummy_func(prev_effort_on_idea_t + idea_t_effort + young_split_constant[0]) \
-						- dummy_func(prev_effort_on_idea_t) \
-						+ dummy_func(prev_effort_on_idea_tplusone + idea_tplusone_effort + young_split_constant[1]) \
-						- dummy_func(prev_effort_on_idea_tplusone)
+			old_return = modified_normal_cdf(prev_effort_on_idea_t + idea_t_effort + young_split_constant[0]) \
+						- modified_normal_cdf(prev_effort_on_idea_t) \
+						+ modified_normal_cdf(prev_effort_on_idea_tplusone + idea_tplusone_effort + young_split_constant[1]) \
+						- modified_normal_cdf(prev_effort_on_idea_tplusone)
 		if old_split[TimePeriod.t] == 0:
-			old_return = dummy_func(prev_effort_on_idea_tminusone + idea_tminusone_effort) \
-						- dummy_func(prev_effort_on_idea_tminusone) \
-						+ dummy_func(prev_effort_on_idea_tplusone + idea_tplusone_effort + young_split_constant[1]) \
-						- dummy_func(prev_effort_on_idea_tplusone)
+			old_return = modified_normal_cdf(prev_effort_on_idea_tminusone + idea_tminusone_effort) \
+						- modified_normal_cdf(prev_effort_on_idea_tminusone) \
+						+ modified_normal_cdf(prev_effort_on_idea_tplusone + idea_tplusone_effort + young_split_constant[1]) \
+						- modified_normal_cdf(prev_effort_on_idea_tplusone)
 		if old_split[TimePeriod.tplusone] == 0:
-			old_return = dummy_func(prev_effort_on_idea_tminusone + idea_tminusone_effort) \
-						- dummy_func(prev_effort_on_idea_tminusone) \
-						+ dummy_func(prev_effort_on_idea_t + idea_t_effort + young_split_constant[0]) \
-						- dummy_func(prev_effort_on_idea_t) 
+			old_return = modified_normal_cdf(prev_effort_on_idea_tminusone + idea_tminusone_effort) \
+						- modified_normal_cdf(prev_effort_on_idea_tminusone) \
+						+ modified_normal_cdf(prev_effort_on_idea_t + idea_t_effort + young_split_constant[0]) \
+						- modified_normal_cdf(prev_effort_on_idea_t) 
 	elif pes.has_n_zero_elems(old_split, 2):
 		if old_split[0] == 0 and old_split[1] == 0:
-			old_return = dummy_func(prev_effort_on_idea_tplusone + idea_tplusone_effort + young_split_constant[1]) \
-						- dummy_func(prev_effort_on_idea_tplusone)
+			old_return = modified_normal_cdf(prev_effort_on_idea_tplusone + idea_tplusone_effort + young_split_constant[1]) \
+						- modified_normal_cdf(prev_effort_on_idea_tplusone)
 		if old_split[0] == 0 and old_split[2] == 0:
-			old_return = dummy_func(prev_effort_on_idea_t + idea_t_effort + young_split_constant[0]) \
-						- dummy_func(prev_effort_on_idea_t) 
+			old_return = modified_normal_cdf(prev_effort_on_idea_t + idea_t_effort + young_split_constant[0]) \
+						- modified_normal_cdf(prev_effort_on_idea_t) 
 		if old_split[1] == 0 and old_split[2] == 0:
-			print "prev_effort_on_idea_tminusone:"
-			print prev_effort_on_idea_tminusone
+			# print "prev_effort_on_idea_tminusone:"
+			# print prev_effort_on_idea_tminusone
 
-			print "idea_tminusone_effort:"
-			print idea_tminusone_effort
+			# print "idea_tminusone_effort:"
+			# print idea_tminusone_effort
 
-			print ' '
-			old_return = dummy_func(prev_effort_on_idea_tminusone + idea_tminusone_effort) \
-						- dummy_func(prev_effort_on_idea_tminusone)
+			# print ' '
+			old_return = modified_normal_cdf(prev_effort_on_idea_tminusone + idea_tminusone_effort) \
+						- modified_normal_cdf(prev_effort_on_idea_tminusone)
 
 	return old_return
 
@@ -130,31 +142,31 @@ def calculate_young_returns(young_split, young_split_constant, old_split_constan
 	prev_effort_on_idea_tminusone = young_split_constant[1] + old_split_constant[2]
 
 	if young_split[0] == 0:
-		young_return = dummy_func(idea_t_effort+prev_effort_on_idea_t+old_split_constant[2]) \
-								 - dummy_func(prev_effort_on_idea_t)
+		young_return = modified_normal_cdf(idea_t_effort+prev_effort_on_idea_t+old_split_constant[2]) \
+								 - modified_normal_cdf(prev_effort_on_idea_t)
 	elif young_split[1] == 0:
-		young_return = dummy_func(idea_tminusone_effort+prev_effort_on_idea_tminusone+old_split_constant[1]) \
-								 - dummy_func(prev_effort_on_idea_tminusone)
+		young_return = modified_normal_cdf(idea_tminusone_effort+prev_effort_on_idea_tminusone+old_split_constant[1]) \
+								 - modified_normal_cdf(prev_effort_on_idea_tminusone)
 	else:
-		young_return = dummy_func(idea_tminusone_effort+prev_effort_on_idea_tminusone+old_split_constant[1]) \
-								 - dummy_func(prev_effort_on_idea_tminusone)\
-								 + dummy_func(idea_t_effort+prev_effort_on_idea_t+old_split_constant[2]) \
-								 - dummy_func(prev_effort_on_idea_t)
+		young_return = modified_normal_cdf(idea_tminusone_effort+prev_effort_on_idea_tminusone+old_split_constant[1]) \
+								 - modified_normal_cdf(prev_effort_on_idea_tminusone)\
+								 + modified_normal_cdf(idea_t_effort+prev_effort_on_idea_t+old_split_constant[2]) \
+								 - modified_normal_cdf(prev_effort_on_idea_t)
 
 	return young_return
 
 def build_effort_pair_dict(young_splits):
 	dict_of_pairs = {}
 	for young_split in young_splits:
-		dict_of_pairs[young_split] = pes.main(0.1, 1.0, 0.1, 1, young_split[TimePeriod.tminusone], young_split[TimePeriod.t])
+		dict_of_pairs[young_split] = pes.main(0.1, 1.0, 0.01, 2, young_split[TimePeriod.tminusone], young_split[TimePeriod.t])
 	return(dict_of_pairs)
 
 def print_dict(dict_to_print):
 	for item in dict_to_print.items():
 		print(item)
 
-def dummy_func(x):
-	return x**2
+# def modified_normal_cdf(x):
+# 	return x**2
 
 def main():
 
@@ -178,11 +190,35 @@ def main():
 
 	possible_young_old_effort_pairs = build_effort_pair_dict(young_splits)	
 
+	print_dict(possible_young_old_effort_pairs)
 
-	max_return_old_young_pair, max_return = return_for_old_young_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
+	# Running the simulation:
 
-	print max_return_old_young_pair
-	print max_return
+	# max_return_old_young_pair, max_return = return_for_old_young_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
+
+	# print max_return_old_young_pair
+	# print max_return
+	# counter = 1
+	# while young_effort_constant != max_return_old_young_pair[0] and old_effort_constant != max_return_old_young_pair[1]:
+	# 	print "young effort constant"
+	# 	print young_effort_constant
+	# 	print "max_return_young"
+	# 	print max_return_old_young_pair[0]
+
+	# 	print "old effort constant"
+	# 	print old_effort_constant
+	# 	print "max_return_old"
+	# 	print max_return_old_young_pair[1]
+
+	# 	young_effort_constant = max_return_old_young_pair[0]
+	# 	old_effort_constant = max_return_old_young_pair[1]
+	# 	max_return_old_young_pair, max_return = return_for_old_young_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
+	# 	counter += 1
+	# 	print counter
+
+
+	# print max_return_old_young_pair
+	# print max_return
 
 
 

@@ -191,7 +191,7 @@ def main(k, total_effort, size_of_effort_units, decimals, young_split1, young_sp
 
 	all_effort_splits = make_decimal(all_effort_splits, decimals)
 
-	print_collection_and_length(sort_list_of_tuples(all_effort_splits))
+	# print_collection_and_length(sort_list_of_tuples(all_effort_splits))
 
 	return(all_effort_splits)
 
