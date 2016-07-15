@@ -7,26 +7,51 @@ class TimePeriod(Enum):
 	t = 1
 	tplusone = 2
 
-def all_possible_effort_splits(total_effort, cost, effort_unit):
+def all_old_splits(total_effort, cost, effort_unit):
 	options = range(0, total_effort+1, effort_unit)
 	all_options = []
 
 	for k in range(len(options)):
 		for j in range(len(options)):
 			for i in range(len(options)):
-				x = options[i]+options[j]+options[k]
-				if x == total_effort or x == (total_effort-cost) or x == (total_effort- (2*cost)):
+				effort_sum = options[i]+options[j]+options[k]
+				if effort_sum == total_effort or effort_sum == (total_effort-cost) or effort_sum == (total_effort- (2*cost)):
 					idec = options[i]
 					jdec = options[j]
 					kdec = options[k]
 					all_options.append((idec, jdec, kdec))
 
 	return all_options
+
+def all_young_splits(total_effort, cost, effort_unit):
+	options = range(0, total_effort+1, effort_unit)
+	all_options = []
+
+	for k in range(len(options)):
+		for j in range(len(options)):
+				effort_sum = options[j]+options[k]
+				if effort_sum == total_effort-cost or effort_sum == total_effort-(2*cost):
+					jdec = options[j]
+					kdec = options[k]
+					all_options.append((jdec, kdec))
+
+	return all_options
 					
 
-def remove_impossible_splits(all_effort_splits, total_effort, size_of_effort_units, num_of_ideas, k):
+def remove_impossible_young_splits(all_young_effort_splits, total_effort, size_of_effort_units, k):
 	splits_to_remove = set()
-	for effort_split in all_effort_splits:
+	for effort_split in all_young_effort_splits:
+		if has_n_zero_elems(effort_split, 0) and sum(effort_split) != total_effort-2*k:
+			splits_to_remove.add(effort_split)
+		elif has_n_zero_elems(effort_split, 1) and sum(effort_split) != total_effort-k:
+			splits_to_remove.add(effort_split)
+
+	remove_from_collection(all_young_effort_splits, splits_to_remove)
+
+
+def remove_impossible_old_splits(all_old_effort_splits, total_effort, size_of_effort_units, k):
+	splits_to_remove = set()
+	for effort_split in all_old_effort_splits:
 
 		if effort_split[TimePeriod.tplusone] == total_effort:
 			splits_to_remove.add(effort_split)
@@ -37,11 +62,11 @@ def remove_impossible_splits(all_effort_splits, total_effort, size_of_effort_uni
 		elif effort_split[TimePeriod.tplusone] == 0 and sum(effort_split) == total_effort-2*k:
 			splits_to_remove.add(effort_split)
 
-	remove_from_collection(all_effort_splits, splits_to_remove)
+	remove_from_collection(all_old_effort_splits, splits_to_remove)
 
 
 # CAUTION: Call this before you make everything into a decimal to avoid float issues
-def remove_splits_based_on_young_effort_splits(young_split, possible_old_splits, k, total_effort):
+def remove_old_splits_based_on_young_effort_splits(young_split, possible_old_splits, k, total_effort):
 
 	splits_to_remove = set()
 
@@ -148,6 +173,21 @@ def float_equals_int(float_num, int_num):
 	return False
 
 
+def all_possible_young_splits(k, total_effort, size_of_effort_units, decimals):
+	young_splits = all_young_splits(total_effort, k, size_of_effort_units)
+	remove_impossible_young_splits(young_splits, total_effort, size_of_effort_units, k)
+	young_splits = make_decimal(young_splits, decimals)
+	return young_splits
+
+
+def all_possible_old_splits(young_split, k, total_effort, size_of_effort_units, decimals):
+	old_splits = all_old_splits(total_effort, k, size_of_effort_units)
+	remove_impossible_old_splits(old_splits, total_effort, size_of_effort_units, k)
+	remove_old_splits_based_on_young_effort_splits(young_split, old_splits, k, total_effort)
+	old_splits = make_decimal(old_splits, decimals)
+	return old_splits
+
+
 def main(k, total_effort, size_of_effort_units, decimals, young_split1, young_split2):
 	# k = float(raw_input("K? "))
 	# total_effort = float(raw_input("Total efforts? "))
@@ -177,23 +217,28 @@ def main(k, total_effort, size_of_effort_units, decimals, young_split1, young_sp
 	k = int(k*(10**decimals))
 	total_effort = int(total_effort*(10**decimals))
 	size_of_effort_units = int(size_of_effort_units*(10**decimals)) #Comment this more thoroughly because unintuitive
-	num_of_ideas = 2
 
-	all_effort_splits = all_possible_effort_splits(total_effort, k, size_of_effort_units)
+	all_old_effort_splits = all_old_splits(total_effort, k, size_of_effort_units)
 
-	# print_collection_and_length(all_effort_splits)
+	# print_collection_and_length(all_old_effort_splits)
 
-	remove_impossible_splits(all_effort_splits, total_effort, size_of_effort_units, num_of_ideas, k)
+	remove_impossible_old_splits(all_old_effort_splits, total_effort, size_of_effort_units, k)
 
-	# print_collection_and_length(all_effort_splits)
+	# print_collection_and_length(all_old_effort_splits)
 
-	remove_splits_based_on_young_effort_splits(young_split, all_effort_splits, k, total_effort)
+	remove_old_splits_based_on_young_effort_splits(young_split, all_old_effort_splits, k, total_effort)
 
-	all_effort_splits = make_decimal(all_effort_splits, decimals)
+	all_old_effort_splits = make_decimal(all_old_effort_splits, decimals)
 
-	# print_collection_and_length(sort_list_of_tuples(all_effort_splits))
+	# print_collection_and_length(sort_list_of_tuples(all_old_effort_splits))
 
-	return(all_effort_splits)
+	# all_young_effort_splits = all_young_splits(total_effort, k, size_of_effort_units)
+
+	# remove_impossible_young_splits(all_young_effort_splits, total_effort, size_of_effort_units, k)
+
+	# all_young_effort_splits = make_decimal(all_young_effort_splits, decimals)
+
+	return all_old_effort_splits
 
 
 

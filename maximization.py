@@ -1,6 +1,6 @@
 from enum import Enum
 import itertools
-import possible_effort_splits as pes
+from possible_effort_splits import *
 from classes import *
 from optimization_equations import modified_normal_cdf
 
@@ -90,14 +90,14 @@ def calculate_old_returns(old_split, young_split, young_split_constant, old_spli
 										+ old_split_constant[TimePeriod.t] + young_split[TimePeriod.tminusone]
 	prev_effort_on_idea_tplusone = 0
 
-	if pes.has_n_zero_elems(old_split, 0):
+	if has_n_zero_elems(old_split, 0):
 		old_return = modified_normal_cdf(prev_effort_on_idea_tminusone + idea_tminusone_effort) \
 						- modified_normal_cdf(prev_effort_on_idea_tminusone) \
 						+ modified_normal_cdf(prev_effort_on_idea_t + idea_t_effort + young_split_constant[0]) \
 						- modified_normal_cdf(prev_effort_on_idea_t) \
 						+ modified_normal_cdf(prev_effort_on_idea_tplusone + idea_tplusone_effort + young_split_constant[1]) \
 						- modified_normal_cdf(prev_effort_on_idea_tplusone)
-	elif pes.has_n_zero_elems(old_split, 1):
+	elif has_n_zero_elems(old_split, 1):
 		if old_split[TimePeriod.tminusone] == 0:
 			old_return = modified_normal_cdf(prev_effort_on_idea_t + idea_t_effort + young_split_constant[0]) \
 						- modified_normal_cdf(prev_effort_on_idea_t) \
@@ -113,7 +113,7 @@ def calculate_old_returns(old_split, young_split, young_split_constant, old_spli
 						- modified_normal_cdf(prev_effort_on_idea_tminusone) \
 						+ modified_normal_cdf(prev_effort_on_idea_t + idea_t_effort + young_split_constant[0]) \
 						- modified_normal_cdf(prev_effort_on_idea_t) 
-	elif pes.has_n_zero_elems(old_split, 2):
+	elif has_n_zero_elems(old_split, 2):
 		if old_split[0] == 0 and old_split[1] == 0:
 			old_return = modified_normal_cdf(prev_effort_on_idea_tplusone + idea_tplusone_effort + young_split_constant[1]) \
 						- modified_normal_cdf(prev_effort_on_idea_tplusone)
@@ -155,10 +155,11 @@ def calculate_young_returns(young_split, young_split_constant, old_split_constan
 
 	return young_return
 
-def build_effort_pair_dict(young_splits):
+
+def build_effort_pair_dict(young_splits, k, total_effort, size_of_effort_units, decimals):
 	dict_of_pairs = {}
 	for young_split in young_splits:
-		dict_of_pairs[young_split] = pes.main(0.1, 1.0, 0.01, 2, young_split[TimePeriod.tminusone], young_split[TimePeriod.t])
+		dict_of_pairs[young_split] = all_possible_old_splits(young_split, k, total_effort, size_of_effort_units, decimals)
 	return(dict_of_pairs)
 
 def print_dict(dict_to_print):
@@ -170,55 +171,59 @@ def print_dict(dict_to_print):
 
 def main():
 
-	# create ideas to keep track of effort spent on each
-	idea_tminusone = Idea(TimePeriod.tminusone)
-	idea_t = Idea(TimePeriod.t)
-	idea_tplusone = Idea(TimePeriod.tplusone)
-
-	scientist_young = Scientist("young") # in time t
-	scientist_old = Scientist("old") # in time t+1
-
-
-	# Set these for now
+	# Set these for now: randomly select later?
 	young_effort_constant = [0.4, 0.4]
 	old_effort_constant = [0.3, 0.3, 0.3]
 
-	# set this for now: build function for this later
-	young_splits = [(0.4, 0.4), (0, 0.9), (0.9, 0), (0.3, 0.5), \
-									(0.5, 0.3), (0.1, 0.7), (0.7, 0.1), \
-									(0.6, 0.3), (0.3, 0.6)]
 
-	possible_young_old_effort_pairs = build_effort_pair_dict(young_splits)	
+	size_of_effort_units = 0.1
+	k = 0.1
+	total_effort = 1.0
+	decimals = 2
 
-	print_dict(possible_young_old_effort_pairs)
+	# To make sure float calculations don't become a problem
+	k = int(k*(10**decimals))
+	total_effort = int(total_effort*(10**decimals))
+	size_of_effort_units = int(size_of_effort_units*(10**decimals)) #Comment this more thoroughly because unintuitive
+
+
+	young_splits = all_possible_young_splits(k, total_effort, size_of_effort_units, decimals)
+
+	# # set this for now: build function for this later
+	# young_splits = [(0.4, 0.4), (0, 0.9), (0.9, 0), (0.3, 0.5), \
+	# 								(0.5, 0.3), (0.1, 0.7), (0.7, 0.1), \
+	# 								(0.6, 0.2), (0.2, 0.6)]
+
+	possible_young_old_effort_pairs = build_effort_pair_dict(young_splits, k, total_effort, size_of_effort_units, decimals)	
+
 
 	# Running the simulation:
 
-	# max_return_old_young_pair, max_return = return_for_old_young_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
+	max_return_old_young_pair, max_return = return_for_old_young_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
 
-	# print max_return_old_young_pair
-	# print max_return
-	# counter = 1
-	# while young_effort_constant != max_return_old_young_pair[0] and old_effort_constant != max_return_old_young_pair[1]:
-	# 	print "young effort constant"
-	# 	print young_effort_constant
-	# 	print "max_return_young"
-	# 	print max_return_old_young_pair[0]
+	print max_return_old_young_pair
+	print max_return
+	counter = 1
+	while young_effort_constant != max_return_old_young_pair[0] and old_effort_constant != max_return_old_young_pair[1]:
+		print "young effort constant"
+		print young_effort_constant
+		print "max_return_young"
+		print max_return_old_young_pair[0]
 
-	# 	print "old effort constant"
-	# 	print old_effort_constant
-	# 	print "max_return_old"
-	# 	print max_return_old_young_pair[1]
+		print "old effort constant"
+		print old_effort_constant
+		print "max_return_old"
+		print max_return_old_young_pair[1]
 
-	# 	young_effort_constant = max_return_old_young_pair[0]
-	# 	old_effort_constant = max_return_old_young_pair[1]
-	# 	max_return_old_young_pair, max_return = return_for_old_young_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
-	# 	counter += 1
-	# 	print counter
+		young_effort_constant = max_return_old_young_pair[0]
+		old_effort_constant = max_return_old_young_pair[1]
+		max_return_old_young_pair, max_return = return_for_old_young_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
+		counter += 1
+		print counter
 
 
-	# print max_return_old_young_pair
-	# print max_return
+	print max_return_old_young_pair
+	print max_return
 
 
 
