@@ -188,9 +188,15 @@ def main():
 	x = []
 	y = []
 	z = []
+	a = []
+	b = []
+
 	x.append(max_return_old_young_pair[1][0])
 	y.append(max_return_old_young_pair[1][1])
 	z.append(max_return_old_young_pair[1][2])
+
+	a.append(max_return_old_young_pair[0][0])
+	b.append(max_return_old_young_pair[0][1])
 
 	print max_return_old_young_pair
 	print max_return
@@ -212,6 +218,10 @@ def main():
 		x.append(max_return_old_young_pair[1][0])
 		y.append(max_return_old_young_pair[1][1])
 		z.append(max_return_old_young_pair[1][2])
+
+		a.append(max_return_old_young_pair[0][0])
+		b.append(max_return_old_young_pair[0][1])
+
 		counter += 1
 		print counter
 
@@ -226,7 +236,13 @@ def main():
 	ax.set_ylabel('Y Label')
 	ax.set_zlabel('Z Label')
 
-plt.show()
+	plt.show()
+
+	plt.scatter(a,b)
+
+	plt.show()
+
+
 	
 
 
