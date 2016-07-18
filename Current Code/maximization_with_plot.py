@@ -171,6 +171,8 @@ def main():
 
 	young_splits = all_possible_young_splits(k, total_effort, size_of_effort_units, decimals)
 
+	print "panda"
+
 	# # set this for now: build function for this later
 	# young_splits = [(0.4, 0.4), (0, 0.9), (0.9, 0), (0.3, 0.5), \
 	# 								(0.5, 0.3), (0.1, 0.7), (0.7, 0.1), \
@@ -178,11 +180,14 @@ def main():
 
 	possible_young_old_effort_pairs = build_effort_pair_dict(young_splits, k, total_effort, size_of_effort_units, decimals)	
 
+	print "lion"
 
 	# Running the simulation:
 
 	max_return_old_young_pair, max_return = return_for_old_young_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
 
+	print "gorilla"
+	
 	fig = plt.figure()
 	ax = fig.add_subplot(111, projection='3d')
 	x = []
