@@ -142,6 +142,9 @@ def build_effort_pair_dict(young_splits, k, total_effort, size_of_effort_units, 
 	dict_of_pairs = {}
 	for young_split in young_splits:
 		dict_of_pairs[young_split] = all_possible_old_splits(young_split, k, total_effort, size_of_effort_units, decimals)
+		print young_split
+		print len(dict_of_pairs[young_split])
+
 	return(dict_of_pairs)
 
 def print_dict(dict_to_print):
@@ -181,13 +184,20 @@ def main():
 	possible_young_old_effort_pairs = build_effort_pair_dict(young_splits, k, total_effort, size_of_effort_units, decimals)	
 
 	print "lion"
+	print len(possible_young_old_effort_pairs)
+
+
+	print sum(map(len, possible_young_old_effort_pairs.values()))
+
+	print_dict(possible_young_old_effort_pairs)
+
 
 	# Running the simulation:
 
 	max_return_old_young_pair, max_return = return_for_old_young_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
 
 	print "gorilla"
-	
+
 	fig = plt.figure()
 	ax = fig.add_subplot(111, projection='3d')
 	x = []
@@ -234,8 +244,14 @@ def main():
 	print max_return_old_young_pair
 	print max_return
 
+	color_old = range(0, len(x), 1)
 
-	ax.scatter(x, y, z, c='r', marker='o')
+	color = []
+
+	for item in color_old:
+		color.append(item/100)
+
+	ax.scatter(x, y, z, c= color, marker='o')
 
 	ax.set_xlabel('X Label')
 	ax.set_ylabel('Y Label')
@@ -243,7 +259,7 @@ def main():
 
 	plt.show()
 
-	plt.scatter(a,b)
+	plt.scatter(a,b, c = color)
 
 	plt.show()
 
