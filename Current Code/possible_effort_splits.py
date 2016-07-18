@@ -173,15 +173,14 @@ def float_equals_int(float_num, int_num):
 	return False
 
 
-def all_possible_young_splits(k, total_effort, size_of_effort_units, decimals):
-	young_splits = all_young_splits(total_effort, k, size_of_effort_units)
+def all_possible_young_splits(young_splits, k, total_effort, size_of_effort_units, decimals):
+	# young_splits = all_young_splits(total_effort, k, size_of_effort_units)
 	remove_impossible_young_splits(young_splits, total_effort, size_of_effort_units, k)
 	young_splits = make_decimal(young_splits, decimals)
 	return young_splits
 
 
-def all_possible_old_splits(young_split, k, total_effort, size_of_effort_units, decimals):
-	old_splits = all_old_splits(total_effort, k, size_of_effort_units)
+def all_possible_old_splits(old_splits, young_split, k, total_effort, size_of_effort_units, decimals):
 	remove_impossible_old_splits(old_splits, total_effort, size_of_effort_units, k)
 	remove_old_splits_based_on_young_effort_splits(young_split, old_splits, k, total_effort)
 	old_splits = make_decimal(old_splits, decimals)

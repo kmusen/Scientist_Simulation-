@@ -3,13 +3,15 @@ import itertools
 from possible_effort_splits import *
 from classes import *
 from optimization_equations import modified_normal_cdf
+import cPickle as pickle
+
 
 class TimePeriod(Enum):
 	tminusone = 0
 	t = 1
 	tplusone = 2
 
-def return_for_old_young_pair(young_split_constant, old_split_constant, dict_of_pairs):
+def return_for_young_old_pair(young_split_constant, old_split_constant, dict_of_pairs):
 	max_return_young_old_pair = None
 	max_return = 0
 
@@ -23,6 +25,7 @@ def return_for_old_young_pair(young_split_constant, old_split_constant, dict_of_
 			all_young_old_splits.append((young_split, old_split))
 
 	for young_old_pair in all_young_old_splits:
+		# print young_old_pair
 		# find return for young
 		young_split = young_old_pair[0]
 
@@ -47,6 +50,10 @@ def return_for_old_young_pair(young_split_constant, old_split_constant, dict_of_
 			# print young_old_pair
 			# print young_return + old_return
 
+			# print 'young_return + old_return > max_return'
+			# print young_return + old_return > max_return
+			# print 'constant_return < young_return + old_return'
+			# print constant_return < young_return + old_return
 			max_return_young_old_pair = young_old_pair
 			max_return = young_return + old_return
 
@@ -136,9 +143,13 @@ def calculate_young_returns(young_split, young_split_constant, old_split_constan
 
 
 def build_effort_pair_dict(young_splits, k, total_effort, size_of_effort_units, decimals):
+	old_splits = all_old_splits(total_effort, k, size_of_effort_units)
 	dict_of_pairs = {}
 	for young_split in young_splits:
-		dict_of_pairs[young_split] = all_possible_old_splits(young_split, k, total_effort, size_of_effort_units, decimals)
+		dict_of_pairs[young_split] = all_possible_old_splits(list(old_splits), young_split, k, total_effort, size_of_effort_units, decimals)
+		# print young_split
+		# print len(dict_of_pairs[young_split])
+		# print len(dict_of_pairs[young_split])
 	return(dict_of_pairs)
 
 def print_dict(dict_to_print):
@@ -151,8 +162,8 @@ def print_dict(dict_to_print):
 def main():
 
 	# Set these for now: randomly select later?
-	young_effort_constant = [0.4, 0.4]
-	old_effort_constant = [0.3, 0.3, 0.3]
+	young_effort_constant = (0.4, 0.4)
+	old_effort_constant = (0.3, 0.3, 0.3)
 
 
 	size_of_effort_units = 0.01
@@ -165,9 +176,10 @@ def main():
 	total_effort = int(total_effort*(10**decimals))
 	size_of_effort_units = int(size_of_effort_units*(10**decimals)) #Comment this more thoroughly because unintuitive
 
+	young_splits = all_young_splits(total_effort, k, size_of_effort_units)
+	young_splits = all_possible_young_splits(young_splits, k, total_effort, size_of_effort_units, decimals)
 
-	young_splits = all_possible_young_splits(k, total_effort, size_of_effort_units, decimals)
-
+	# print len(young_splits)
 	# # set this for now: build function for this later
 	# young_splits = [(0.4, 0.4), (0, 0.9), (0.9, 0), (0.3, 0.5), \
 	# 								(0.5, 0.3), (0.1, 0.7), (0.7, 0.1), \
@@ -175,15 +187,26 @@ def main():
 
 	possible_young_old_effort_pairs = build_effort_pair_dict(young_splits, k, total_effort, size_of_effort_units, decimals)	
 
+	# print_dict(possible_young_old_effort_pairs)
+	# print sum(map(len, possible_young_old_effort_pairs.values()))
+
+	# with open('k_tenth_hundredth_increment_dict.p', 'wb') as fp:
+	# 	pickle.dump(k_tenth_hundredth_increment_dict, fp)
+
 
 	# Running the simulation:
 
-	max_return_old_young_pair, max_return = return_for_old_young_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
+	# max_return_old_young_pair, max_return = return_for_young_old_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
 
-	print max_return_old_young_pair
-	print max_return
-	counter = 1
-	while young_effort_constant != max_return_old_young_pair[0] and old_effort_constant != max_return_old_young_pair[1]:
+
+	counter = 0
+	end = False
+	#while young_effort_constant != max_return_old_young_pair[0] and old_effort_constant != max_return_old_young_pair[1]:
+	while end == False:
+		max_return_old_young_pair, max_return = return_for_young_old_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
+		print "max_return_old_young_pair"
+		print max_return_old_young_pair
+
 		print "young effort constant"
 		print young_effort_constant
 		print "max_return_young"
@@ -194,9 +217,14 @@ def main():
 		print "max_return_old"
 		print max_return_old_young_pair[1]
 
+
+
+		if young_effort_constant == max_return_old_young_pair[0] and old_effort_constant == max_return_old_young_pair[1]:
+			end = True
+
+
 		young_effort_constant = max_return_old_young_pair[0]
 		old_effort_constant = max_return_old_young_pair[1]
-		max_return_old_young_pair, max_return = return_for_old_young_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
 		counter += 1
 		print counter
 
