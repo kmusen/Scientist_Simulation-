@@ -4,6 +4,9 @@ from possible_effort_splits import *
 from classes import *
 from optimization_equations import modified_normal_cdf
 
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+
 class TimePeriod(Enum):
 	tminusone = 0
 	t = 1
@@ -180,10 +183,19 @@ def main():
 
 	max_return_old_young_pair, max_return = return_for_old_young_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
 
+	fig = plt.figure()
+	ax = fig.add_subplot(111, projection='3d')
+	x = []
+	y = []
+	z = []
+	x.append(max_return_old_young_pair[1][0])
+	y.append(max_return_old_young_pair[1][1])
+	z.append(max_return_old_young_pair[1][2])
+
 	print max_return_old_young_pair
 	print max_return
 	counter = 1
-	while young_effort_constant != max_return_old_young_pair[0] and old_effort_constant != max_return_old_young_pair[1]:
+	while young_effort_constant != max_return_old_young_pair[0] and old_effort_constant != max_return_old_young_pair[1] and counter <15:
 		print "young effort constant"
 		print young_effort_constant
 		print "max_return_young"
@@ -197,6 +209,9 @@ def main():
 		young_effort_constant = max_return_old_young_pair[0]
 		old_effort_constant = max_return_old_young_pair[1]
 		max_return_old_young_pair, max_return = return_for_old_young_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
+		x.append(max_return_old_young_pair[1][0])
+		y.append(max_return_old_young_pair[1][1])
+		z.append(max_return_old_young_pair[1][2])
 		counter += 1
 		print counter
 
@@ -205,7 +220,13 @@ def main():
 	print max_return
 
 
+	ax.scatter(x, y, z, c='r', marker='o')
 
+	ax.set_xlabel('X Label')
+	ax.set_ylabel('Y Label')
+	ax.set_zlabel('Z Label')
+
+plt.show()
 	
 
 
