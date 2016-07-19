@@ -23,9 +23,9 @@ def main():
 
 	ax.plot(x, y, z, c= color, marker='o')
 
-	ax.set_xlabel('X Label')
-	ax.set_ylabel('Y Label')
-	ax.set_zlabel('Z Label')
+	ax.set_xlabel('Idea t-1')
+	ax.set_ylabel('Idea t')
+	ax.set_zlabel('Idea t+1')
 
 	plt.show()
 
@@ -34,7 +34,9 @@ def main():
 
 
 	plt.plot(a,b, c = color)
-
+	plt.xlabel('Idea t-1')
+	plt.ylabel('Idea t')
+	
 	plt.show()
 
 main()
