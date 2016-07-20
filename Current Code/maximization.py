@@ -12,12 +12,13 @@ class TimePeriod(Enum):
 	tplusone = 2
 
 def return_for_young_old_pair(young_split_constant, old_split_constant, dict_of_pairs):
-	max_return_young_old_pair = None
+	max_return_young_old_pair = (young_split_constant, old_split_constant)
 	max_return = 0
 
 	constant_return = calculate_young_returns(young_split_constant, young_split_constant, old_split_constant) \
 						+ calculate_old_returns(old_split_constant, young_split_constant, young_split_constant, old_split_constant)
-
+	print "constant_return"
+	print constant_return
 	all_young_old_splits = []
 	for young_split in dict_of_pairs.keys():
 		all_old_splits = dict_of_pairs[young_split]
@@ -146,9 +147,8 @@ def build_effort_pair_dict(young_splits, k, total_effort, size_of_effort_units, 
 	old_splits = all_old_splits(total_effort, k, size_of_effort_units)
 	dict_of_pairs = {}
 	for young_split in young_splits:
-		dict_of_pairs[young_split] = all_possible_old_splits(list(old_splits), young_split, k, total_effort, size_of_effort_units, decimals)
+		dict_of_pairs[young_split] = all_possible_old_splits(old_splits[:], young_split, k, total_effort, size_of_effort_units, decimals)
 		# print young_split
-		# print len(dict_of_pairs[young_split])
 		# print len(dict_of_pairs[young_split])
 	return(dict_of_pairs)
 
@@ -162,8 +162,8 @@ def print_dict(dict_to_print):
 def main():
 
 	# Set these for now: randomly select later?
-	young_effort_constant = (0.4, 0.4)
-	old_effort_constant = (0.3, 0.3, 0.3)
+	young_effort_constant = (0.0, 0.9)
+	old_effort_constant = (0.0, 1.0, 0.0)
 
 
 	size_of_effort_units = 0.01
@@ -187,6 +187,8 @@ def main():
 
 	possible_young_old_effort_pairs = build_effort_pair_dict(young_splits, k, total_effort, size_of_effort_units, decimals)	
 
+	print "----------------------------------------------------DONE BUILDING DICTIONARY----------------------------------------------------"
+
 	# print_dict(possible_young_old_effort_pairs)
 	# print sum(map(len, possible_young_old_effort_pairs.values()))
 
@@ -203,9 +205,12 @@ def main():
 	end = False
 	#while young_effort_constant != max_return_old_young_pair[0] and old_effort_constant != max_return_old_young_pair[1]:
 	while end == False:
+		print "here"
 		max_return_old_young_pair, max_return = return_for_young_old_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
 		print "max_return_old_young_pair"
 		print max_return_old_young_pair
+		print "max_return"
+		print max_return
 
 		print "young effort constant"
 		print young_effort_constant
