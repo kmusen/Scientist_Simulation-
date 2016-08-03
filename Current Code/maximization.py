@@ -162,15 +162,18 @@ def print_dict(dict_to_print):
 def main():
 
 	# Set these for now: randomly select later?
-	young_effort_constant = (0.0, 0.9)
-	old_effort_constant = (0.0, 1.0, 0.0)
+	young_effort_constant = (0.3, 0.3)
+	old_effort_constant = (0.1, 0.1, 0.6)
 
+	print "young_effort_constant = (0.3, 0.3)"
+	print "old_effort_constant = (0.1, 0.1, 0.6)"
 
 	size_of_effort_units = 0.01
 	k = 0.1
 	total_effort = 1.0
 	decimals = 2
 
+	print "k is .2"
 	# To make sure float calculations don't become a problem
 	k = int(k*(10**decimals))
 	total_effort = int(total_effort*(10**decimals))
