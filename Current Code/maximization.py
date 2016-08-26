@@ -129,6 +129,8 @@ def main():
 	
 	size_of_effort_units = args[0]
 	k = args[1]
+	print args
+	print k
 	total_effort = args[2]
 	decimals = args[3]
 	young_effort_constant = (args[4], args[5])
@@ -137,7 +139,7 @@ def main():
 	# Set these for now: randomly select later?
 #	young_effort_constant = (0.3, 0.3)
 #	old_effort_constant = (0.1, 0.1, 0.6)
-#
+# 
 #	size_of_effort_units = 0.1
 #	k = 0.1
 #	total_effort = 1.0
@@ -164,7 +166,12 @@ def main():
 
 			young_effort_constant = max_return_old_young_pair[0]
 			old_effort_constant = max_return_old_young_pair[1]
-		writer.writerow(str(k) + ',' + str(max_return) + ',' + str(max_return_old_young_pair))
+		print str(k) + ' ' + str(round(max_return, 3)) + ' ' + str(max_return_old_young_pair)
+
+		to_write = [float(k/10.0*decimals), round(max_return,3), max_return_old_young_pair[0][0], max_return_old_young_pair[0][1], \
+						max_return_old_young_pair[1][0], max_return_old_young_pair[1][1], max_return_old_young_pair[1][2]]
+		to_write_str = [str(x) for x in to_write]
+		writer.writerow(to_write)
 
 
 
