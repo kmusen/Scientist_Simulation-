@@ -1,8 +1,8 @@
 import itertools
-from enum import Enum
+from enum import IntEnum
 import sys
 
-class TimePeriod(Enum):
+class TimePeriod(IntEnum):
 	tminusone = 0
 	t = 1
 	tplusone = 2

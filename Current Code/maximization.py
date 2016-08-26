@@ -1,4 +1,6 @@
-from enum import Enum
+import csv
+import sys
+from enum import IntEnum
 import itertools
 from possible_effort_splits import *
 from classes import *
@@ -6,7 +8,7 @@ from optimization_equations import modified_normal_cdf
 import cPickle as pickle
 
 
-class TimePeriod(Enum):
+class TimePeriod(IntEnum):
 	tminusone = 0
 	t = 1
 	tplusone = 2
@@ -122,15 +124,24 @@ def print_dict(dict_to_print):
 		print(item)
 
 def main():
-
+	
+	args = [float(x) for x in sys.argv[1:]]
+	
+	size_of_effort_units = args[0]
+	k = args[1]
+	total_effort = args[2]
+	decimals = args[3]
+	young_effort_constant = (args[4], args[5])
+	old_effort_constant = (args[6], args[7], args[8])
+	reps = args[9]
 	# Set these for now: randomly select later?
-	young_effort_constant = (0.3, 0.3)
-	old_effort_constant = (0.1, 0.1, 0.6)
-
-	size_of_effort_units = 0.01
-	k = 0.1
-	total_effort = 1.0
-	decimals = 2
+#	young_effort_constant = (0.3, 0.3)
+#	old_effort_constant = (0.1, 0.1, 0.6)
+#
+#	size_of_effort_units = 0.1
+#	k = 0.1
+#	total_effort = 1.0
+#	decimals = 2
 
 	# To make sure float calculations don't become a problem
 	k = int(k*(10**decimals))
@@ -143,24 +154,17 @@ def main():
 	possible_young_old_effort_pairs = build_effort_pair_dict(young_splits, k, total_effort, size_of_effort_units, decimals)	
 
 	print "----------------------------------------------------DONE BUILDING DICTIONARY----------------------------------------------------"
-
+		
 	# Running the simulation:
 
+	with open('test.csv', 'wb') as csvfile:
+		writer = csv.writer(csvfile, delimiter = ',')
+		for rep in range(0, int(reps)):
+			max_return_old_young_pair, max_return = return_for_young_old_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
 
-
-	counter = 0
-	end = False
-	while end == False:
-		max_return_old_young_pair, max_return = return_for_young_old_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
-
-		if young_effort_constant == max_return_old_young_pair[0] and old_effort_constant == max_return_old_young_pair[1]:
-			end = True
-
-
-		young_effort_constant = max_return_old_young_pair[0]
-		old_effort_constant = max_return_old_young_pair[1]
-		counter += 1
-
+			young_effort_constant = max_return_old_young_pair[0]
+			old_effort_constant = max_return_old_young_pair[1]
+		writer.writerow(str(k) + ',' + str(max_return) + ',' + str(max_return_old_young_pair))
 
 
 
