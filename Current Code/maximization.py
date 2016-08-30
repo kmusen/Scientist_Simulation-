@@ -129,8 +129,7 @@ def main():
 	
 	size_of_effort_units = args[0]
 	k = args[1]
-	print args
-	print k
+	float_k = args[1]
 	total_effort = args[2]
 	decimals = args[3]
 	young_effort_constant = (args[4], args[5])
@@ -156,22 +155,26 @@ def main():
 	possible_young_old_effort_pairs = build_effort_pair_dict(young_splits, k, total_effort, size_of_effort_units, decimals)	
 
 	print "----------------------------------------------------DONE BUILDING DICTIONARY----------------------------------------------------"
-		
+	
+	print_dict(possible_young_old_effort_pairs)
 	# Running the simulation:
+	to_write_rows = []
 
-	with open('test.csv', 'wb') as csvfile:
-		writer = csv.writer(csvfile, delimiter = ',')
-		for rep in range(0, int(reps)):
-			max_return_old_young_pair, max_return = return_for_young_old_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
+	for rep in range(0, int(reps)):
+		max_return_old_young_pair, max_return = return_for_young_old_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs)
 
-			young_effort_constant = max_return_old_young_pair[0]
-			old_effort_constant = max_return_old_young_pair[1]
-		print str(k) + ' ' + str(round(max_return, 3)) + ' ' + str(max_return_old_young_pair)
-
-		to_write = [float(k/10.0*decimals), round(max_return,3), max_return_old_young_pair[0][0], max_return_old_young_pair[0][1], \
+		young_effort_constant = max_return_old_young_pair[0]
+		old_effort_constant = max_return_old_young_pair[1]
+		
+		to_write = [float_k, round(max_return,3), max_return_old_young_pair[0][0], max_return_old_young_pair[0][1], \
 						max_return_old_young_pair[1][0], max_return_old_young_pair[1][1], max_return_old_young_pair[1][2]]
 		to_write_str = [str(x) for x in to_write]
-		writer.writerow(to_write)
+		to_write_rows.append(to_write_str)
+
+	with open('test' + str(float_k) +'.csv', 'wb') as csvfile:
+		writer = csv.writer(csvfile, delimiter = ',')
+		for row in to_write_rows:
+			writer.writerow(row)
 
 
 
