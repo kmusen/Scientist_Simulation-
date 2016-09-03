@@ -45,8 +45,8 @@ def graph_modified_normal_cdf(x_min, x_max, num_of_intervals, mean, std_dev, hor
 	plt.plot(x_range,y)
 	plt.show()
 
-def modified_normal_cdf(x):
-	return (norm.cdf(x-2, 0, 1.2)-0.0478)
+def modified_normal_cdf(std_dev, x):
+	return (norm.cdf(x-2, 0, std_dev)-0.0478)
 
 def main():
 	# graph_sigmoid(1, -5, 5, 50)
@@ -54,6 +54,7 @@ def main():
 	# print norm.cdf(1)
 
 	graph_modified_normal_cdf(0, 5, 50, 0, 1.2, 2, 0.0478)
+
 
 if __name__ == "__main__":
     main()
