@@ -122,9 +122,8 @@ def build_effort_pair_dict(young_splits, k_old, k_young, total_effort, size_of_e
 	# young_split = (9, 0)
 	# all_old = all_possible_old_splits(old_splits, young_split, k_old, k_young, total_effort, size_of_effort_units, decimals)
 	for young_split in young_splits: 
-		if young_split == (0.9, 0.0): 
-			print "IEJGORIJAEORIGJAOEIRGJEOIAJGAOEJGOAEJGOIAEJRIOGJ"
-		# dict_of_pairs[young_split] = all_possible_old_splits(old_splits, young_split, k_old, k_young, total_effort, size_of_effort_units, decimals)
+		# remember that [:] makes a copy of a list
+		dict_of_pairs[young_split] = all_possible_old_splits(old_splits[:], young_split, k_old, k_young, total_effort, size_of_effort_units, decimals)
 	return(dict_of_pairs)
 
 def print_dict(dict_to_print):
@@ -167,7 +166,7 @@ def main():
 
 	# print "----------------------------------------------------DONE BUILDING DICTIONARY----------------------------------------------------"
 	
-	# print_dict(possible_young_old_effort_pairs)
+	print_dict(possible_young_old_effort_pairs)
 	# # Running the simulation:
 	# to_write_rows = []
 
