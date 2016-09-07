@@ -52,8 +52,8 @@ def remove_impossible_young_splits(all_young_effort_splits, total_effort, size_o
 def remove_impossible_old_splits(all_old_effort_splits, total_effort, size_of_effort_units, k):
 	splits_to_remove = set()
 	print all_old_effort_splits
-	for effort_split in all_old_effort_splits:
 
+	for effort_split in all_old_effort_splits:
 		if effort_split[TimePeriod.tplusone] == total_effort:
 			splits_to_remove.add(effort_split)
 		# elif effort_split[TimePeriod.tplusone] != 0 and sum(effort_split) == total_effort:
