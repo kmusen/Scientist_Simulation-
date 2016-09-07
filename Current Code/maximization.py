@@ -155,7 +155,9 @@ def main():
 	total_effort = int(total_effort*(10**decimals))
 	size_of_effort_units = int(size_of_effort_units*(10**decimals)) #Comment this more thoroughly because unintuitive
 
-	print size_of_effort_units
+	print k_young
+	print k_old
+	
 	young_splits = all_young_splits(total_effort, k_young, size_of_effort_units)
 	young_splits = all_possible_young_splits(young_splits, k_young, total_effort, size_of_effort_units, decimals)
 
