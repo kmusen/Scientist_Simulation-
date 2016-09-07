@@ -116,7 +116,7 @@ def remove_old_splits_based_on_young_effort_splits(young_split, possible_old_spl
 					splits_to_remove.add(split)
 
 
-	# print_collection_and_length(sort_list_of_tuples(splits_to_remove))
+	print_collection_and_length(sort_list_of_tuples(splits_to_remove))
 	remove_from_collection(possible_old_splits, splits_to_remove)
 
 
