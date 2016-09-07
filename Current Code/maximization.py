@@ -165,7 +165,7 @@ def main():
 
 	# print "----------------------------------------------------DONE BUILDING DICTIONARY----------------------------------------------------"
 	
-	print_dict(possible_young_old_effort_pairs)
+	# print_dict(possible_young_old_effort_pairs)
 	# # Running the simulation:
 	# to_write_rows = []
 
