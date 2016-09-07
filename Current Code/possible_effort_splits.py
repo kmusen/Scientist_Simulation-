@@ -73,7 +73,8 @@ def remove_old_splits_based_on_young_effort_splits(young_split, possible_old_spl
 	# Case 1: if there is no zero in the splits
 	if has_n_zero_elems(young_split, 0):
 		for split in possible_old_splits:
-			if sum(split) == (total_effort-(2*k)): 
+			# if sum(split) == (total_effort-(2*k_young)): 
+			if sum(split) > (total_effort - k):
 				splits_to_remove.add(split)
 			elif split[TimePeriod.tplusone] == 0:
 				if sum(split) != total_effort:
