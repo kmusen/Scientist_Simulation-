@@ -155,6 +155,7 @@ def main():
 	total_effort = int(total_effort*(10**decimals))
 	size_of_effort_units = int(size_of_effort_units*(10**decimals)) #Comment this more thoroughly because unintuitive
 
+	print size_of_effort_units
 	young_splits = all_young_splits(total_effort, k_young, size_of_effort_units)
 	young_splits = all_possible_young_splits(young_splits, k_young, total_effort, size_of_effort_units, decimals)
 
@@ -172,12 +173,12 @@ def main():
 		young_effort_constant = max_return_old_young_pair[0]
 		old_effort_constant = max_return_old_young_pair[1]
 		
-		to_write = [float_k, round(young_return, 3), round(old_return, 3), round(max_return,3), max_return_old_young_pair[0][0], max_return_old_young_pair[0][1], \
+		to_write = [float_k_young, float_k_old, round(young_return, 3), round(old_return, 3), round(max_return,3), max_return_old_young_pair[0][0], max_return_old_young_pair[0][1], \
 						max_return_old_young_pair[1][0], max_return_old_young_pair[1][1], max_return_old_young_pair[1][2]]
 		to_write_str = [str(x) for x in to_write]
 		to_write_rows.append(to_write_str)
 
-	with open('test' + str(float_k) +'.csv', 'wb') as csvfile:
+	with open('test_young_' + str(float_k_young) + '_old_' + str(float_k_old) +'.csv', 'wb') as csvfile:
 		writer = csv.writer(csvfile, delimiter = ',')
 		for row in to_write_rows:
 			writer.writerow(row)
