@@ -121,6 +121,7 @@ def build_effort_pair_dict(young_splits, k_old, k_young, total_effort, size_of_e
 	print old_splits
 	dict_of_pairs = {}
 	for young_split in young_splits: 
+		print young_split
 		dict_of_pairs[young_split] = all_possible_old_splits(old_splits, young_split, k_old, k_young, total_effort, size_of_effort_units, decimals)
 	return(dict_of_pairs)
 
