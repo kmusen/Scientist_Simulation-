@@ -55,7 +55,8 @@ def remove_impossible_old_splits(all_old_effort_splits, total_effort, size_of_ef
 
 		if effort_split[TimePeriod.tplusone] == total_effort:
 			splits_to_remove.add(effort_split)
-		elif effort_split[TimePeriod.tplusone] != 0 and sum(effort_split) == total_effort:
+		# elif effort_split[TimePeriod.tplusone] != 0 and sum(effort_split) == total_effort:
+		elif effort_split[TimePeriod.tplusone] != 0 and sum(effort_split) > (total_effort-k):
 			splits_to_remove.add(effort_split)
 		elif sum(effort_split) == total_effort-2*k and has_n_zero_elems(effort_split, 2):
 			splits_to_remove.add(effort_split)
