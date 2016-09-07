@@ -184,8 +184,8 @@ def all_possible_young_splits(young_splits, k, total_effort, size_of_effort_unit
 
 
 def all_possible_old_splits(old_splits, young_split, k_old, k_young, total_effort, size_of_effort_units, decimals):
-	print old_splits
 	remove_impossible_old_splits(old_splits, total_effort, size_of_effort_units, k_old)
+	print old_splits
 	remove_old_splits_based_on_young_effort_splits(young_split, old_splits, k_old, total_effort)
 	old_splits = make_decimal(old_splits, decimals)
 	return old_splits
