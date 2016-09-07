@@ -118,9 +118,10 @@ def calculate_young_returns(young_split, young_split_constant, old_split_constan
 
 def build_effort_pair_dict(young_splits, k_old, k_young, total_effort, size_of_effort_units, decimals):
 	old_splits = all_old_splits(total_effort, k_old, size_of_effort_units)
+	print old_splits
 	dict_of_pairs = {}
-	for young_split in young_splits: 
-		dict_of_pairs[young_split] = all_possible_old_splits(old_splits, young_split, k_old, k_young, total_effort, size_of_effort_units, decimals)
+	# for young_split in young_splits: 
+	# 	dict_of_pairs[young_split] = all_possible_old_splits(old_splits, young_split, k_old, k_young, total_effort, size_of_effort_units, decimals)
 	return(dict_of_pairs)
 
 def print_dict(dict_to_print):
@@ -156,15 +157,13 @@ def main():
 	size_of_effort_units = int(size_of_effort_units*(10**decimals)) #Comment this more thoroughly because unintuitive
 
 	young_splits = all_young_splits(total_effort, k_young, size_of_effort_units)
-	print young_splits
 	young_splits = all_possible_young_splits(young_splits, k_young, total_effort, size_of_effort_units, decimals)
-	print young_splits
 
-	# possible_young_old_effort_pairs = build_effort_pair_dict(young_splits, k_old, k_young, total_effort, size_of_effort_units, decimals)	
+	possible_young_old_effort_pairs = build_effort_pair_dict(young_splits, k_old, k_young, total_effort, size_of_effort_units, decimals)	
 
 	# print "----------------------------------------------------DONE BUILDING DICTIONARY----------------------------------------------------"
 	
-	# print_dict(possible_young_old_effort_pairs)
+	print_dict(possible_young_old_effort_pairs)
 	# # Running the simulation:
 	# to_write_rows = []
 
