@@ -116,11 +116,11 @@ def calculate_young_returns(young_split, young_split_constant, old_split_constan
 	return young_return
 
 
-def build_effort_pair_dict(young_splits, k, total_effort, size_of_effort_units, decimals):
-	old_splits = all_old_splits(total_effort, k, size_of_effort_units)
+def build_effort_pair_dict(young_splits, k_old, k_young, total_effort, size_of_effort_units, decimals):
+	old_splits = all_old_splits(total_effort, k_old, size_of_effort_units)
 	dict_of_pairs = {}
-	for young_split in young_splits:
-		dict_of_pairs[young_split] = all_possible_old_splits(old_splits[:], young_split, k, total_effort, size_of_effort_units, decimals)
+	for young_split in young_splits: 
+		dict_of_pairs[young_split] = all_possible_old_splits(old_splits, young_split, k_old, k_young, total_effort, size_of_effort_units, decimals)
 	return(dict_of_pairs)
 
 def print_dict(dict_to_print):
@@ -132,14 +132,14 @@ def main():
 	args = [float(x) for x in sys.argv[1:]]
 	
 	size_of_effort_units = args[0]
-	k = args[1]
-	float_k = args[1]
-	total_effort = args[2]
-	decimals = args[3]
-	young_effort_constant = (args[4], args[5])
-	old_effort_constant = (args[6], args[7], args[8])
-	reps = args[9]
-	std_dev = args[10]
+	float_k_young = args[1]
+	float_k_old = args[2]
+	total_effort = args[3]
+	decimals = args[4]
+	young_effort_constant = (args[5], args[6])
+	old_effort_constant = (args[7], args[8], args[9])
+	reps = args[10]
+	std_dev = args[11]
 	# Set these for now: randomly select later?
 #	young_effort_constant = (0.3, 0.3)
 #	old_effort_constant = (0.1, 0.1, 0.6)
@@ -150,14 +150,15 @@ def main():
 #	decimals = 2
 
 	# To make sure float calculations don't become a problem
-	k = int(k*(10**decimals))
+	k_young = int(float_k_young*(10**decimals))
+	k_old = int(float_k_old*(10**decimals))
 	total_effort = int(total_effort*(10**decimals))
 	size_of_effort_units = int(size_of_effort_units*(10**decimals)) #Comment this more thoroughly because unintuitive
 
-	young_splits = all_young_splits(total_effort, k, size_of_effort_units)
-	young_splits = all_possible_young_splits(young_splits, k, total_effort, size_of_effort_units, decimals)
+	young_splits = all_young_splits(total_effort, k_young, size_of_effort_units)
+	young_splits = all_possible_young_splits(young_splits, k_young, total_effort, size_of_effort_units, decimals)
 
-	possible_young_old_effort_pairs = build_effort_pair_dict(young_splits, k, total_effort, size_of_effort_units, decimals)	
+	possible_young_old_effort_pairs = build_effort_pair_dict(young_splits, k_old, k_young, total_effort, size_of_effort_units, decimals)	
 
 	print "----------------------------------------------------DONE BUILDING DICTIONARY----------------------------------------------------"
 	
