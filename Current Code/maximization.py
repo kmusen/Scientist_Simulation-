@@ -157,33 +157,34 @@ def main():
 
 	print k_young
 	print k_old
-	
+
 	young_splits = all_young_splits(total_effort, k_young, size_of_effort_units)
-	young_splits = all_possible_young_splits(young_splits, k_young, total_effort, size_of_effort_units, decimals)
+	print(young_splits)
+	# young_splits = all_possible_young_splits(young_splits, k_young, total_effort, size_of_effort_units, decimals)
 
-	possible_young_old_effort_pairs = build_effort_pair_dict(young_splits, k_old, k_young, total_effort, size_of_effort_units, decimals)	
+	# possible_young_old_effort_pairs = build_effort_pair_dict(young_splits, k_old, k_young, total_effort, size_of_effort_units, decimals)	
 
-	print "----------------------------------------------------DONE BUILDING DICTIONARY----------------------------------------------------"
+	# print "----------------------------------------------------DONE BUILDING DICTIONARY----------------------------------------------------"
 	
-	print_dict(possible_young_old_effort_pairs)
-	# Running the simulation:
-	to_write_rows = []
+	# print_dict(possible_young_old_effort_pairs)
+	# # Running the simulation:
+	# to_write_rows = []
 
-	for rep in range(0, int(reps)):
-		max_return_old_young_pair, max_return, old_return, young_return = return_for_young_old_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs, std_dev)
+	# for rep in range(0, int(reps)):
+	# 	max_return_old_young_pair, max_return, old_return, young_return = return_for_young_old_pair(young_effort_constant, old_effort_constant, possible_young_old_effort_pairs, std_dev)
 
-		young_effort_constant = max_return_old_young_pair[0]
-		old_effort_constant = max_return_old_young_pair[1]
+	# 	young_effort_constant = max_return_old_young_pair[0]
+	# 	old_effort_constant = max_return_old_young_pair[1]
 		
-		to_write = [float_k_young, float_k_old, round(young_return, 3), round(old_return, 3), round(max_return,3), max_return_old_young_pair[0][0], max_return_old_young_pair[0][1], \
-						max_return_old_young_pair[1][0], max_return_old_young_pair[1][1], max_return_old_young_pair[1][2]]
-		to_write_str = [str(x) for x in to_write]
-		to_write_rows.append(to_write_str)
+	# 	to_write = [float_k_young, float_k_old, round(young_return, 3), round(old_return, 3), round(max_return,3), max_return_old_young_pair[0][0], max_return_old_young_pair[0][1], \
+	# 					max_return_old_young_pair[1][0], max_return_old_young_pair[1][1], max_return_old_young_pair[1][2]]
+	# 	to_write_str = [str(x) for x in to_write]
+	# 	to_write_rows.append(to_write_str)
 
-	with open('test_young_' + str(float_k_young) + '_old_' + str(float_k_old) +'.csv', 'wb') as csvfile:
-		writer = csv.writer(csvfile, delimiter = ',')
-		for row in to_write_rows:
-			writer.writerow(row)
+	# with open('test_young_' + str(float_k_young) + '_old_' + str(float_k_old) +'.csv', 'wb') as csvfile:
+	# 	writer = csv.writer(csvfile, delimiter = ',')
+	# 	for row in to_write_rows:
+	# 		writer.writerow(row)
 
 
 
