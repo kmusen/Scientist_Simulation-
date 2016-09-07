@@ -63,6 +63,7 @@ def remove_impossible_old_splits(all_old_effort_splits, total_effort, size_of_ef
 			splits_to_remove.add(effort_split)
 
 	remove_from_collection(all_old_effort_splits, splits_to_remove)
+	print(old_splits)
 
 
 # CAUTION: Call this before you make everything into a decimal to avoid float issues

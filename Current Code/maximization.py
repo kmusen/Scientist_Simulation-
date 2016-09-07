@@ -118,7 +118,6 @@ def calculate_young_returns(young_split, young_split_constant, old_split_constan
 
 def build_effort_pair_dict(young_splits, k_old, k_young, total_effort, size_of_effort_units, decimals):
 	old_splits = all_old_splits(total_effort, k_old, size_of_effort_units)
-	print old_splits
 	dict_of_pairs = {}
 	for young_split in young_splits: 
 		print young_split
