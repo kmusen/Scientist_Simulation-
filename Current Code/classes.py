@@ -18,7 +18,7 @@ class Idea(object):
 
 class Scientist(object):
 
-	def __init__(self, age):
+	def __init__(self, prng, year_created, total_effort):
 		self.age = age
 
 	def __str__(self):

@@ -53,7 +53,7 @@ def main():
 	# graph_modified_sigmoid(2.0, , -5, 5, 15)
 	# print norm.cdf(1)
 
-	graph_modified_normal_cdf(0, 5, 50, 0, 1.2, 2, 0.0478)
+	graph_modified_normal_cdf(0, 10, 50, 0, 1.2, 4, 0)
 
 
 if __name__ == "__main__":

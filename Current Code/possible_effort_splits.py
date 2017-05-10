@@ -1,6 +1,9 @@
-import itertools
+from itertools import product
 from enum import IntEnum
 import sys
+import cPickle as pickle
+import numpy.ma as ma
+import numpy as np
 
 class TimePeriod(IntEnum):
 	tminusone = 0
@@ -25,18 +28,9 @@ def all_old_splits(total_effort, cost, effort_unit):
 
 def all_young_splits(total_effort, cost, effort_unit):
 	options = range(0, total_effort+1, effort_unit)
-	all_options = []
-
-	for k in range(len(options)):
-		for j in range(len(options)):
-				effort_sum = options[j]+options[k]
-				if effort_sum == total_effort-cost or effort_sum == total_effort-(2*cost):
-					jdec = options[j]
-					kdec = options[k]
-					all_options.append((jdec, kdec))
-
+	all_options = (product(options, options))
 	return all_options
-					
+
 
 def remove_impossible_young_splits(all_young_effort_splits, total_effort, size_of_effort_units, k):
 	splits_to_remove = set()
@@ -73,7 +67,7 @@ def remove_old_splits_based_on_young_effort_splits(young_split, possible_old_spl
 	# Case 1: if there is no zero in the splits
 	if has_n_zero_elems(young_split, 0):
 		for split in possible_old_splits:
-			# if sum(split) == (total_effort-(2*k_young)): 
+			# if sum(split) == (total_effort-(2*k_young)):
 			if sum(split) > (total_effort - k):
 				splits_to_remove.add(split)
 			elif split[TimePeriod.tplusone] == 0:
@@ -82,7 +76,7 @@ def remove_old_splits_based_on_young_effort_splits(young_split, possible_old_spl
 			elif split[TimePeriod.tplusone] != 0:
 				if sum(split) != (total_effort-k):
 					splits_to_remove.add(split)
-	
+
 	# Case 2: if the young scientist invested nothing in idea tminusone
 	elif young_split[TimePeriod.tminusone] == 0:
 		for split in possible_old_splits:
@@ -134,7 +128,7 @@ def sort_list_of_tuples(unsorted_list):
 # CASE 1: (t) and (t+1) != 0
 # CASE 2: (t) != 0 and (t+1) == 0
 # CASE 3: (t) == 0 and (t+1) != 0
-# CASE 4: t ==0 and (t+1) == 0 
+# CASE 4: t ==0 and (t+1) == 0
 
 def print_collection_and_length(collection):
 	for item in collection:

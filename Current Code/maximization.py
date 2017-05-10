@@ -5,7 +5,6 @@ import itertools
 from possible_effort_splits import *
 from classes import *
 from optimization_equations import modified_normal_cdf
-import cPickle as pickle
 
 
 class TimePeriod(IntEnum):
