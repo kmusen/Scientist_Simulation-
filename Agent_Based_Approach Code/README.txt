@@ -11,6 +11,7 @@ Github Desktop:
 
 FIRST STEPS:
 
+- Go to the Command Prompt/Terminal and install the mesa package using "pip install mesa"
 - Clone the Scientist_Simulation code from Github using this link
 	https://github.com/kmusen/Scientist_Simulation-.git
 - This can be done most easily through the graphical interface Github Desktop
@@ -38,13 +39,14 @@ EXPLANATION OF CODE FORMAT:
 	- The "step" function for this class defines what happens at every time point
 
 	
-SAMPLE RUN:
+- A sample simulation run is the second cell in the Jupyter Notebook
 
-cycles = 2 (the number of time periods to run the simulation for)
-ideas_per_cycle = 3
-scientists_per_cycle = 2
-granularity = 1
-model = ScientistModel(scientists_per_cycle, ideas_per_cycle, cycles, granularity)
-for i in range(cycles):
-    model.step()
- 
+- The third cell is the current state of the model
+
+RUNNING THE SIMULATION:
+
+- You can run the sample simulation by clicking "Cells" on the menu bar at the top of the page, and clicking "Run all cells"
+
+	- The output will be beneath the code that was just run
+
+	
