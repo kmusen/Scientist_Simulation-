@@ -63,21 +63,11 @@ class Scientist(Agent):
         # 3. the idea was created before or during the current time (MAY MODIFY)
 
         avail = np.nonzero(np.logical_or(self.k < self.self_effort_left, self.self_invested_effort > 0) & (self.current_idea_effort < self.max_idea_effort))[0]
-        print('avail: ')
-        print(avail)
         # Make sure criteria 3 is fulfilled
         idea_time_period = avail//self.ideas_per_cycle
-        print('idea_time_period: ')
-        print(idea_time_period)
         #crit_3_indices = np.nonzero((idea_time_period == self.time_born) | (idea_time_period == self.time_born - 1))[0]
-        print('self.model.schedule.time: ')
-        print(self.model.schedule.time)
         crit_3_indices = np.nonzero(idea_time_period <= self.model.schedule.time)[0]
-        print('crit_3_indices: ')
-        print(crit_3_indices)
         avail = avail[crit_3_indices]
-        print('avail:')
-        print(avail)
         
         # Return if the Scientist can't work on any ideas
         if len(avail) == 0:
