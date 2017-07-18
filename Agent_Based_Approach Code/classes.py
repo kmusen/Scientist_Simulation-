@@ -89,8 +89,11 @@ class Scientist(Agent):
         
         # Pick which idea to work on based on highest return
         current_returns = norm.cdf(avail_idea_effort, avail_means, avail_std_devs)
-#         unit_to_invest = 1
-        potential_returns = norm.cdf(avail_idea_effort + self.self_effort_left - self.k[avail], avail_means, avail_std_devs)
+
+        invested_already = np.nonzero(self.self_invested_effort[avail] > 0)[0]
+        k_to_subtract = self.k[avail].copy()
+        k_to_subtract[invested_already] = 0
+        potential_returns = norm.cdf(avail_idea_effort + self.self_effort_left - k_to_subtract, avail_means, avail_std_devs)
         
         # Returns index for which idea to invest in
         idea_to_invest_in = np.argmax(potential_returns - current_returns)
