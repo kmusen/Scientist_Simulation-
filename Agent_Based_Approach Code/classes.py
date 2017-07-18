@@ -12,6 +12,7 @@ class Scientist(Agent):
                             starting_effort_mean, starting_effort_std_dev, k_mean, k_std_dev, model):
 
         #super().__init__(unique_id, model)
+        self.model = model
 
         self.ideas_per_cycle = ideas_per_cycle
         
@@ -31,7 +32,6 @@ class Scientist(Agent):
         self.max_idea_effort = max_idea_effort
 
 
-
         ###### Variables that are distorted for each scientist ######
 
         # Scalar: total effort a scientist gets per time period
@@ -41,33 +41,43 @@ class Scientist(Agent):
         self.self_effort_left = self.total_self_effort
         
         # Array keeping track of the k for each idea
-        self.k = np.random.normal(k_mean, k_std_dev, total_ideas)
+        self.k = np.random.normal(k_mean, k_std_dev)
         
         # Array keeping track of the mean of the return curve for each idea
-        self.means = np.random.normal(true_means_mean, true_means_std_dev, total_ideas)
+        self.means = np.random.normal(true_means_mean, true_means_std_dev)
         
         # Array keeping track of the standard deviations of the return curve for each idea
-        self.std_devs = np.random.normal(true_std_devs_mean, true_std_devs_std_dev, total_ideas)
+        self.std_devs = np.random.normal(true_std_devs_mean, true_std_devs_std_dev)
 
     
     def step(self):
         # Prints out each of the scientist attributes before the step starts
-        print(' ')
-        print("SCIENTIST BEFORE")
-        print(' ')
-        pprint.pprint(self.__dict__, width=1)
+        # print(' ')
+        # print("SCIENTIST BEFORE")
+        # print(' ')
+        # pprint.pprint(self.__dict__, width=1)
         
         # Pick ideas scientist can work on according to three criteria:
-        # 1. the scientist has enough effort left to cover the entry cost "k"
+        # 1. the scientist has enough effort left to cover the entry cost "k" if the scientists hasn't worked on it before
         # 2. the idea has not reached the maximum effort allowed on it
-        # 3. the idea was created either in this time period, or the previous time periods (NEED TO CHANGE)
-        avail = np.nonzero((self.k < self.self_effort_left) & (self.current_idea_effort < self.max_idea_effort))[0]
-        
+        # 3. the idea was created before or during the current time (MAY MODIFY)
+
+        avail = np.nonzero(np.logical_or(self.k < self.self_effort_left, self.self_invested_effort > 0) & (self.current_idea_effort < self.max_idea_effort))[0]
+        print('avail: ')
+        print(avail)
         # Make sure criteria 3 is fulfilled
         idea_time_period = avail//self.ideas_per_cycle
+        print('idea_time_period: ')
+        print(idea_time_period)
         #crit_3_indices = np.nonzero((idea_time_period == self.time_born) | (idea_time_period == self.time_born - 1))[0]
-        crit_3_indices = np.nonzero(idea_time_period <= self.time_born)[0]
+        print('self.model.schedule.time: ')
+        print(self.model.schedule.time)
+        crit_3_indices = np.nonzero(idea_time_period <= self.model.schedule.time)[0]
+        print('crit_3_indices: ')
+        print(crit_3_indices)
         avail = avail[crit_3_indices]
+        print('avail:')
+        print(avail)
         
         # Return if the Scientist can't work on any ideas
         if len(avail) == 0:
@@ -85,8 +95,9 @@ class Scientist(Agent):
         # Returns index for which idea to invest in
         idea_to_invest_in = np.argmax(potential_returns - current_returns)
                 
-        # Pay the entrance cost to work on the idea "k"
-        self.self_effort_left -= self.k[avail[idea_to_invest_in]]
+        # Pay the entrance cost to work on the idea "k" if haven't paid before
+        if self.self_invested_effort[idea_to_invest_in] == 0: 
+            self.self_effort_left -= self.k[avail[idea_to_invest_in]]
                 
         # Invest in idea with highest potential return (Note: pass by value)
         self.current_idea_effort[avail[idea_to_invest_in]] += self.self_effort_left
@@ -96,10 +107,10 @@ class Scientist(Agent):
         self.self_effort_left = self.total_self_effort
 
         # Prints out each of the scientist attributes after the step has been completed
-        print(' ')
-        print("SCIENTIST AFTER")
-        print(' ')
-        pprint.pprint(self.__dict__, width=1)
+        # print(' ')
+        # print("SCIENTIST AFTER")
+        # print(' ')
+        # pprint.pprint(self.__dict__, width=1)
 
 
 class ScientistModel(Model):

@@ -21,8 +21,16 @@ starting_effort_mean = 10
 starting_effort_std_dev = 1
 
 # Define distribution of k's for each scientists for each idea
-k_mean = 1
-k_std_dev = 0.3
+k_mean = 1 * np.ones(total_ideas)
+k_std_dev = 0.3 * np.ones(total_ideas)
+
+###### Define "truth" variables #######
+
+# Create true means for return curves
+true_means = np.random.normal(true_means_mean, true_means_std_dev)
+
+# Create true std devs for return curves
+true_std_devs = np.random.normal(true_std_devs_mean, true_std_devs_std_dev)
 
 
 max_idea_effort = 100 * np.ones(total_ideas)
