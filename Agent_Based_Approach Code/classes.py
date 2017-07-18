@@ -6,7 +6,11 @@ from scipy.stats import norm
 import pprint
 
 class Scientist(Agent):
-    def __init__(self, curr_time, k, means, std_devs, total_self_effort, total_ideas, current_idea_effort, ideas_per_cycle, max_idea_effort, model):
+    def __init__(self, curr_time, scientists_per_cycle, ideas_per_cycle, total_scientists, \
+                            total_ideas, granularity, current_idea_effort, max_idea_effort, \
+                            true_means_mean, true_means_std_dev, true_std_devs_mean, true_std_devs_std_dev, \
+                            starting_effort_mean, starting_effort_std_dev, k_mean, k_std_dev, model):
+
         #super().__init__(unique_id, model)
 
         self.ideas_per_cycle = ideas_per_cycle
@@ -14,24 +18,8 @@ class Scientist(Agent):
         # Scalar: what time period this Scientist was born
         self.time_born = curr_time
         
-        # Scalar: total effort a scientist gets per time period
-        self.total_self_effort = total_self_effort
-        
-        # Scalar: remaining effort a Scientist has left
-        self.self_effort_left = total_self_effort
-        
+        # Array: keeps track of effort this scientist has spent on each idea
         self.self_invested_effort = np.zeros(total_ideas)
-        
-        # Array keeping track of the k for each idea
-        self.k = k.copy()
-        
-        # Array keeping track of the mean of the return curve for each idea
-        # TODO: need to add noise
-        self.means = means.copy()
-        
-        # Array keeping track of the standard deviations of the return curve for each idea
-        # TODO: need to add noise
-        self.std_devs = std_devs.copy()
         
         # Scalar: number of total ideas created throughout the simulation
         self.total_ideas = total_ideas
@@ -41,6 +29,25 @@ class Scientist(Agent):
         
         # Array keeping track of the maximum effort allowed on each idea
         self.max_idea_effort = max_idea_effort
+
+
+
+        ###### Variables that are distorted for each scientist ######
+
+        # Scalar: total effort a scientist gets per time period
+        self.total_self_effort = np.random.normal(starting_effort_mean, starting_effort_std_dev)
+
+        # Scalar: remaining effort a Scientist has left
+        self.self_effort_left = self.total_self_effort
+        
+        # Array keeping track of the k for each idea
+        self.k = np.random.normal(k_mean, k_std_dev, total_ideas)
+        
+        # Array keeping track of the mean of the return curve for each idea
+        self.means = np.random.normal(true_means_mean, true_means_std_dev, total_ideas)
+        
+        # Array keeping track of the standard deviations of the return curve for each idea
+        self.std_devs = np.random.normal(true_std_devs_mean, true_std_devs_std_dev, total_ideas)
 
     
     def step(self):
@@ -96,7 +103,13 @@ class Scientist(Agent):
 
 
 class ScientistModel(Model):
-    def __init__(self, scientists_per_cycle, ideas_per_cycle, cycles, granularity, true_means, true_std_devs, starting_effort, max_idea_effort):
+    def __init__(self, scientists_per_cycle, ideas_per_cycle, cycles, granularity, max_idea_effort, \
+                    true_means_mean, true_means_std_dev, true_std_devs_mean, true_std_devs_std_dev, \
+                    starting_effort_mean, starting_effort_std_dev, k_mean, k_std_dev):
+
+        self.schedule = BaseScheduler(self) # has a .time() function
+
+        # Constant variables
         self.scientists_per_cycle = scientists_per_cycle
         self.ideas_per_cycle = ideas_per_cycle
         self.total_scientists = scientists_per_cycle * cycles
@@ -105,17 +118,21 @@ class ScientistModel(Model):
         self.current_idea_effort = np.zeros(self.total_ideas)
         self.max_idea_effort = max_idea_effort
 
-
-        self.schedule = BaseScheduler(self) # has a .time() function
-
-        self.k = 1 * np.ones(self.total_ideas) # TODO: must vary this for each scientist
-        self.means = true_means # TODO: must vary this for each scientist
-#         self.means[0] = 2
-        self.std_devs = true_std_devs # TODO: must vary this for each scientist
-        self.total_self_effort = starting_effort # TODO: must vary this for each scientist
+        # Varied variables
+        self.true_means_mean = true_means_mean
+        self.true_means_std_dev = true_means_std_dev
+        self.true_std_devs_mean = true_std_devs_mean
+        self.true_std_devs_std_dev = true_std_devs_std_dev 
+        self.starting_effort_mean = starting_effort_mean
+        self.starting_effort_std_dev = starting_effort_std_dev
+        self.k_mean = k_mean
+        self.k_std_dev = k_std_dev
 
     def step(self):
         for i in range(self.scientists_per_cycle):
-            a = Scientist(self.schedule.time, self.k, self.means, self.std_devs, self.total_self_effort, self.total_ideas, self.current_idea_effort, self.ideas_per_cycle, self.max_idea_effort, self)
+            a = Scientist(self.schedule.time, self.scientists_per_cycle, self.ideas_per_cycle, self.total_scientists, \
+                            self.total_ideas, self.granularity, self.current_idea_effort, self.max_idea_effort, \
+                            self.true_means_mean, self.true_means_std_dev, self.true_std_devs_mean, self.true_std_devs_std_dev, \
+                            self.starting_effort_mean, self.starting_effort_std_dev, self.k_mean, self.k_std_dev, self)
             self.schedule.add(a)
         self.schedule.step()
