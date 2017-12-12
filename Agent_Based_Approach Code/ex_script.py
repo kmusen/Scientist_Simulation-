@@ -6,7 +6,7 @@ Created on Thu Nov  2 12:59:46 2017
 @author: michellezhao
 """
 
-from classes import *
+from model import *
 import matplotlib.pyplot as plt
 
 
